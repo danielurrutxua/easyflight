@@ -3,15 +3,13 @@ package com.example.easyflight.flights.controller
 import com.example.easyflight.flights.adapters.FlightSearchRequest
 import com.example.easyflight.flights.adapters.FlightSearchResponse
 import com.example.easyflight.flights.service.FlightSearchService
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.awt.print.Book
-import java.time.LocalDate
 
 
 @RestController
-@RequestMapping("/flight")
+@RequestMapping("/flights")
 class FlightController(private val flightSearchService: FlightSearchService) {
 
     @GetMapping("/search")

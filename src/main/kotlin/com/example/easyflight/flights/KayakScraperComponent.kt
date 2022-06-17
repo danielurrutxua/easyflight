@@ -1,13 +1,11 @@
 package com.example.easyflight.flights
 
 import com.example.easyflight.flights.adapters.Flight
-import com.example.easyflight.flights.adapters.G16kContainer
-import com.example.easyflight.flights.adapters.TravelOffer
+import com.example.easyflight.flights.adapters.TimeLocationContainer
+import com.example.easyflight.flights.adapters.SearchResponse
 import com.example.easyflight.flights.util.ChromeDriverInitializer
 import com.example.easyflight.flights.util.UrlBuilder
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 import org.openqa.selenium.By
 import org.openqa.selenium.ElementClickInterceptedException
 import org.openqa.selenium.StaleElementReferenceException
@@ -57,85 +55,53 @@ class KayakScraperComponent(
             }
     }
 
-    override fun extractFlights(document: Document, destination: String): List<TravelOffer> {
+    override fun extractFlights(document: Document, destination: String): List<SearchResponse> {
         try {
-            var infoContainerClassName = "g16k"
             val timeClassName = "[class~=-time]"
             val locationClassName = "[class~=-station]"
-            val listOffers = mutableListOf<TravelOffer>()
+            val listOffers = mutableListOf<SearchResponse>()
             document.getElementsByClass("Base-Results-HorizonResult")
                 .apply { removeAt(0) }.forEach { element ->
 
-                    val listInfos = mutableListOf<G16kContainer>()
+                    val listInfos = mutableListOf<TimeLocationContainer>()
+                    val times = element.select(timeClassName).filter { it.className().length == 9 }
+                    val locations = element.select(locationClassName).filter { it.className().length == 11 }
 
-                    val horas = element.select(timeClassName).filter { it.className().length == 9 }
-//                    if (element.getElementsByClass(infoContainerClassName).isEmpty()) {
-//                        infoContainerClassName = "[class~=-segment-info]"
-//
-//                        if(element.select(infoContainerClassName).isNotEmpty()){
-//                            element.select(infoContainerClassName).forEach {
-//
-//                                val departureRow = it.getElementsByClass("dErF-departure-row")[0]
-//                                val arrivalRow = it.getElementsByClass("dErF-arrival-row")[0]
-//
-//                                listInfos.add(
-//                                    G16kContainer(
-//                                        departureRow.getElementsByClass(timeClassName).text(),
-//                                        departureRow.getElementsByClass(locationClassName).text()
-//                                    )
-//                                )
-//
-//                                listInfos.add(
-//                                    G16kContainer(
-//                                        arrivalRow.getElementsByClass(timeClassName).text(),
-//                                        arrivalRow.getElementsByClass(locationClassName).text()
-//                                    )
-//                                )
-//
-//                            }
-//                        }
-//
-//                    } else {
-////                        element.getElementsByClass(infoContainerClassName).forEach {
-////                            listInfos.add(
-////                                G16kContainer(
-////                                    it.getElementsByClass(timeClassName).text(),
-////                                    it.getElementsByClass(locationClassName).text()
-////                                )
-////                            )
-////                        }
-//                    }
+                    if (times.size == locations.size) {
+                        for (i in 0..times.size) {
+                            listInfos.add(TimeLocationContainer(times[i].text(), locations[i].text()))
+                        }
+                    }
 
+                    if (listInfos.size % 2 == 0) {
+                        val listFlights = mutableListOf<Flight>()
+                        for (i in 0 until listInfos.size - 1 step (2)) {
+                            listFlights.add(
+                                Flight(
+                                    listInfos[i].time,
+                                    listInfos[i + 1].time,
+                                    listInfos[i].location,
+                                    listInfos[i + 1].location
+                                )
+                            )
+                        }
 
-                        if (listInfos.size % 2 == 0) {
-                            val listFlights = mutableListOf<Flight>()
-                            for (i in 0 until listInfos.size - 1 step (2)) {
-                                listFlights.add(
-                                    Flight(
-                                        listInfos[i].time,
-                                        listInfos[i + 1].time,
-                                        listInfos[i].location,
-                                        listInfos[i + 1].location
+                        listFlights.forEach { flight ->
+                            if (flight.arrivalAirport
+                                    .substringAfterLast('(')
+                                    .substringBeforeLast(')') == destination
+                            ) {
+                                val index = listFlights.indexOf(flight)
+                                listOffers.add(
+                                    SearchResponse(
+                                        listFlights.subList(0, index + 1),
+                                        listFlights.subList(index + 1, listFlights.size)
                                     )
                                 )
                             }
-
-                            listFlights.forEach { flight ->
-                                if (flight.arrivalAirport
-                                        .substringAfterLast('(')
-                                        .substringBeforeLast(')') == destination
-                                ) {
-                                    val index = listFlights.indexOf(flight)
-                                    listOffers.add(
-                                        TravelOffer(
-                                            listFlights.subList(0, index + 1),
-                                            listFlights.subList(index + 1, listFlights.size)
-                                        )
-                                    )
-                                }
-                            }
                         }
                     }
+                }
 
 
             return listOffers

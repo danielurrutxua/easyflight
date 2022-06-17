@@ -9,7 +9,7 @@ class ChromeDriverInitializer(private val userAgentSelector: UserAgentSelector) 
 
 
     fun initialize(url: String): ChromeDriver {
-        System.setProperty("webdriver.chrome.driver", "Driver/chromedriver-102.exe")
+        System.setProperty("webdriver.chrome.driver", "Driver/chromedriver90.exe")
         val options = ChromeOptions()
         options.addArguments("--disable-blink-features=AutomationControlled")
         // options.setExperimentalOption("excludeSwitches", "enable-automation")
@@ -18,6 +18,7 @@ class ChromeDriverInitializer(private val userAgentSelector: UserAgentSelector) 
         val driver = ChromeDriver(options)
         driver.executeScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         driver.get(url)
+        driver.manage().deleteAllCookies()
         return driver
     }
 

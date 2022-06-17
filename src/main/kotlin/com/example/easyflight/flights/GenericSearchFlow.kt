@@ -2,7 +2,7 @@ package com.example.easyflight.flights
 
 import com.example.easyflight.flights.adapters.FlightSearchRequest
 import com.example.easyflight.flights.adapters.FlightSearchResponse
-import com.example.easyflight.flights.adapters.TravelOffer
+import com.example.easyflight.flights.adapters.SearchResponse
 import com.example.easyflight.flights.enum.WebSources
 import com.example.easyflight.flights.util.ChromeDriverInitializer
 import com.example.easyflight.flights.util.UrlBuilder
@@ -50,7 +50,7 @@ abstract class GenericSearchFlow(
 
     protected abstract fun prepareScreenForScraping()
 
-    protected abstract fun extractFlights(document: Document, destination: String): List<TravelOffer>
+    protected abstract fun extractFlights(document: Document, destination: String): List<SearchResponse>
 
     private fun generateUrl(request: FlightSearchRequest, source: WebSources) = urlBuilder
         .setBaseUrl(

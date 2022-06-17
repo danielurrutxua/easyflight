@@ -1,6 +1,6 @@
 package com.example.easyflight.flights.adapters
 
-data class G16kContainer(
+data class TimeLocationContainer(
     val time: String,
     val location: String
 )
