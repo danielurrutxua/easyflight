@@ -1,0 +1,8 @@
+package com.example.easyflight.flights.adapters
+
+data class Flight (
+    val departureTime: String,
+    val departureAirport: String,
+    val arrivalTime: String,
+    val arrivalAirport: String
+        )
