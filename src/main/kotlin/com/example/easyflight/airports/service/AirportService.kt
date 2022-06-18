@@ -2,14 +2,11 @@ package com.example.easyflight.airports.service
 
 import com.example.easyflight.airports.model.Airport
 import com.example.easyflight.airports.repository.AirportRepository
-import com.example.easyflight.flights.util.ChromeDriverInitializer
+import com.example.easyflight.flights.util.drivers.chrome.ChromeDriverInitializer
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.openqa.selenium.chrome.ChromeDriver
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.io.File
 
 
 @Service
