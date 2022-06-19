@@ -1,4 +1,4 @@
-package com.example.easyflight.flights.util.drivers
+package com.example.easyflight.scraping.drivers
 
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.springframework.stereotype.Component

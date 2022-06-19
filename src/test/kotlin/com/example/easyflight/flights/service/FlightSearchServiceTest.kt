@@ -1,14 +1,7 @@
 package com.example.easyflight.flights.service
 
-import com.example.easyflight.flights.adapters.FlightSearchRequest
-import com.example.easyflight.flights.adapters.FlightSearchResponse
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.Month
 
 class FlightSearchServiceTest {
 

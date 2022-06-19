@@ -1,6 +1,6 @@
-package com.example.easyflight.flights.util.drivers.edge
+package com.example.easyflight.scraping.drivers.edge
 
-import com.example.easyflight.flights.util.drivers.DriverInitializer
+import com.example.easyflight.scraping.drivers.DriverInitializer
 import org.openqa.selenium.edge.EdgeDriver
 import org.openqa.selenium.edge.EdgeOptions
 import org.springframework.stereotype.Component

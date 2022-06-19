@@ -1,10 +1,9 @@
-package com.example.easyflight.flights.util.drivers.chrome
+package com.example.easyflight.scraping.drivers.chrome
 
-import com.example.easyflight.flights.util.UserAgentSelector
-import com.example.easyflight.flights.util.drivers.DriverInitializer
+import com.example.easyflight.scraping.util.UserAgentSelector
+import com.example.easyflight.scraping.drivers.DriverInitializer
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
-import org.openqa.selenium.remote.DesiredCapabilities
 import org.springframework.stereotype.Component
 
 @Component

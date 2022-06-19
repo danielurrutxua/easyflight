@@ -1,10 +1,10 @@
-package com.example.easyflight.flights
+package com.example.easyflight.scraping
 
-import com.example.easyflight.flights.adapters.FlightSearchRequest
-import com.example.easyflight.flights.adapters.FlightResponse
-import com.example.easyflight.flights.enum.WebSources
-import com.example.easyflight.flights.util.UrlBuilder
-import com.example.easyflight.flights.util.drivers.DriverInitializer
+import com.example.easyflight.flights.adapters.request.FlightSearchRequest
+import com.example.easyflight.flights.adapters.response.FlightSearchResponse
+import com.example.easyflight.scraping.enum.WebSources
+import com.example.easyflight.scraping.util.UrlBuilder
+import com.example.easyflight.scraping.drivers.DriverInitializer
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.openqa.selenium.remote.RemoteWebDriver
@@ -27,7 +27,7 @@ abstract class GenericSearchFlow(
 
     private val logger: Logger = LoggerFactory.getLogger(GenericSearchFlow::class.java)
 
-    fun execute(request: FlightSearchRequest, source: WebSources): List<FlightResponse> {
+    fun execute(request: FlightSearchRequest, source: WebSources): List<FlightSearchResponse> {
         logger.info("Scraping request for $source")
         return try {
             driver = driverInitializer.initialize(generateUrl(request, source))
@@ -50,7 +50,7 @@ abstract class GenericSearchFlow(
 
     protected abstract fun prepareScreenForScraping()
 
-    protected abstract fun extractFlights(document: Document, destination: String): List<FlightResponse>
+    protected abstract fun extractFlights(document: Document, destination: String): List<FlightSearchResponse>
 
     private fun generateUrl(request: FlightSearchRequest, source: WebSources) = urlBuilder
         .setBaseUrl(

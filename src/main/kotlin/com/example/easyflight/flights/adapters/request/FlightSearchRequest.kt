@@ -1,4 +1,4 @@
-package com.example.easyflight.flights.adapters
+package com.example.easyflight.flights.adapters.request
 
 data class FlightSearchRequest(
         val origin: String,

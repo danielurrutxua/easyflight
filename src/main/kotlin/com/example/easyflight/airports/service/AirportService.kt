@@ -3,7 +3,7 @@ package com.example.easyflight.airports.service
 import com.example.easyflight.airports.exceptions.AirportNotFoundException
 import com.example.easyflight.airports.model.Airport
 import com.example.easyflight.airports.repository.AirportRepository
-import com.example.easyflight.flights.util.drivers.chrome.ChromeDriverInitializer
+import com.example.easyflight.scraping.drivers.chrome.ChromeDriverInitializer
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value

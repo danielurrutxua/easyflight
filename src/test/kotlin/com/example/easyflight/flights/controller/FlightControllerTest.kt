@@ -1,7 +1,7 @@
 package com.example.easyflight.flights.controller
 
-import com.example.easyflight.flights.adapters.FlightSearchRequest
-import com.example.easyflight.flights.adapters.FlightSearchResponse
+import com.example.easyflight.flights.adapters.request.FlightSearchRequest
+import com.example.easyflight.flights.adapters.response.FlightSearchResponse
 import com.example.easyflight.flights.service.FlightSearchService
 import com.google.gson.Gson
 import io.mockk.every

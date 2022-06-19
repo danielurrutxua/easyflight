@@ -1,16 +1,19 @@
 package com.example.easyflight.flights.controller
 
-import com.example.easyflight.flights.adapters.FlightSearchRequest
-import com.example.easyflight.flights.adapters.FlightResponse
-import com.example.easyflight.flights.service.FlightSearchService
-import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.*
-import java.awt.print.Book
+import com.example.easyflight.flights.adapters.request.FlightSearchRequest
+import com.example.easyflight.flights.adapters.response.FlightSearchResponse
+import com.example.easyflight.flights.exceptions.ScraperException
+import com.example.easyflight.flights.service.FlightSearchInterface
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
 @RequestMapping("/flights")
-class FlightController(private val flightSearchService: FlightSearchService) {
+class FlightController(private val flightSearchInterface: FlightSearchInterface) {
 
     @GetMapping("/search")
     fun search(@RequestParam("origin") origin: String,
@@ -19,24 +22,11 @@ class FlightController(private val flightSearchService: FlightSearchService) {
                @RequestParam("arrival_date")  arrivalDate: String,
                @RequestParam("adults") adults: Int,
                @RequestParam("children") children: Int)
-    : List<FlightResponse> = flightSearchService.performSearch(FlightSearchRequest(origin, destination, departureDate, arrivalDate, adults, children))
+    : ResponseEntity<List<FlightSearchResponse>> =
+        try {
+            ResponseEntity.accepted().body(flightSearchInterface.performSearch(FlightSearchRequest(origin, destination, departureDate, arrivalDate, adults, children)))
+        } catch (ex: ScraperException) {
+            ResponseEntity.internalServerError().build()
+        }
 
-
-    @GetMapping("/")
-    fun findFlights(): Collection<Book>? {
-        return null
-    }
-
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun updateBook(
-            @PathVariable("id") id: String?, @RequestBody book: Book): Book {
-        return book
-    }
-
-    @GetMapping("/foos/{id}")
-    @ResponseBody
-    fun getFooById(@PathVariable id: String): String? {
-        return "ID: $id"
-    }
 }

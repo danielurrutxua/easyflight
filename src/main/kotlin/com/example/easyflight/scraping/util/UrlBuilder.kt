@@ -1,4 +1,4 @@
-package com.example.easyflight.flights.util
+package com.example.easyflight.scraping.util
 
 import org.springframework.stereotype.Component
 

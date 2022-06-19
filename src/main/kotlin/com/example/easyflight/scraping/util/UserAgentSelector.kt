@@ -1,4 +1,4 @@
-package com.example.easyflight.flights.util
+package com.example.easyflight.scraping.util
 
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReaderBuilder
