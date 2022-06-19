@@ -1,14 +1,14 @@
 package com.example.easyflight.flights
 
-import com.example.easyflight.airports.repository.AirportRepository
+import com.example.easyflight.airports.service.AirportService
 import com.example.easyflight.flights.adapters.Flight
+import com.example.easyflight.flights.adapters.FlightResponse
+import com.example.easyflight.flights.adapters.Offer
 import com.example.easyflight.flights.adapters.Scale
-import com.example.easyflight.flights.adapters.TimeLocationContainer
-import com.example.easyflight.flights.adapters.TravelOffer
-import com.example.easyflight.flights.exceptions.ScraperDataParsingException
 import com.example.easyflight.flights.util.UrlBuilder
-import com.example.easyflight.flights.util.drivers.edge.EdgeDriverInitializer
+import com.example.easyflight.flights.util.drivers.chrome.ChromeDriverInitializer
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.openqa.selenium.By
 import org.openqa.selenium.StaleElementReferenceException
@@ -21,12 +21,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class KayakScraperComponent(
-    edgeDriverInitializer: EdgeDriverInitializer,
+    edgeDriverInitializer: ChromeDriverInitializer,
     urlBuilder: UrlBuilder,
-    private val airportRepository: AirportRepository
+    private val airportService: AirportService
 ) : GenericSearchFlow(edgeDriverInitializer, urlBuilder) {
 
-    private val LOGGER: Logger = LoggerFactory.getLogger(KayakScraperComponent::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(KayakScraperComponent::class.java)
 
     override fun prepareScreenForScraping() {
         //CLOSE COOKIES POP-UP
@@ -36,7 +36,7 @@ class KayakScraperComponent(
             .click()
 
         //WAIT TILL SEARCH COMPLETED
-        LOGGER.info("Waiting for the search to finish")
+        logger.info("Waiting for the search to finish")
         WebDriverWait(driver, 50)
             .until(
                 ExpectedConditions.attributeToBe(
@@ -49,139 +49,128 @@ class KayakScraperComponent(
         //SHOW MORE RESULTS
         //TODO(load more results)
 
-        //EXPAND RESULTS CONTAINERS
-//        LOGGER.info("Expanding result containers")
-//        driver.findElementsByClassName("resultInner")
-//            .apply { removeAt(0) }
-//            .forEach {
-//                WebDriverWait(driver, 2)
-//                    .ignoring(ElementClickInterceptedException::class.java)
-//                    .until(ExpectedConditions.elementToBeClickable(it)).click()
-//            }
     }
 
-    private fun getScales(outboundScales: Int, returnScales: Int, scalesElement: Elements ): Map<Scale, Int> {
-        val scalesMap = mutableMapOf<Scale, Int>()
-        if (outboundScales + returnScales == scalesElement.size) {
-            scalesElement.forEach {
-                val airportOpt = airportRepository.findById(it.text())
-                if(airportOpt.isPresent){
-                    val scale = Scale(
-                        airportOpt.get(),
-                        it.select("title").text().substringAfter("de ").substringBefore(" en"))
-                }
-
-            }
-
-        } else {
-            throw ScraperDataParsingException("The number of scales is not equal to the size of scales information element. KAYAK")
-        }
-
-        return scalesList
-    }
-
-    override fun extractFlights(document: Document, destination: String): List<TravelOffer> {
+    override fun extractFlights(document: Document, destination: String): List<FlightResponse> {
         try {
+
+
             val departTimeClassRegex = "[class~=depart-time]"
             val arrivalTimeClassRegex = "[class~=arrival-time]"
             val airportNameClassRegex = "[class~=airport-name]"
             val stopsTextClassRegex = "[class~=stops-text]"
-            val stopsInfoClassRegex = "[class~=js-layover]"
-            val priceTextClassRegex = "[class~=price-text]"
+            val stopsInfoClassName = "js-layover"
             val airlineNamesClassRegex = "[class~=codeshares-airline-names]"
 
-            val locationClassName = "[class~=-station]"
-            val travelOfferList = mutableListOf<TravelOffer>()
+            val travelOfferList = mutableListOf<FlightResponse>()
             document.getElementsByClass("Base-Results-HorizonResult").forEach { element ->
 
-                val listInfos = mutableListOf<TimeLocationContainer>()
                 val departTimes = element.select(departTimeClassRegex)
                 val arrivalTimes = element.select(arrivalTimeClassRegex)
                 val airportNames = element.select(airportNameClassRegex)
                 val stopsText = element.select(stopsTextClassRegex)
-                val stopsInfo = element.select(stopsInfoClassRegex)
-                val priceText = element.select(priceTextClassRegex)
+                val stopsInfo = element.getElementsByClass(stopsInfoClassName)
                 val airlineNames = element.select(airlineNamesClassRegex)
 
-                if (stopsText.size == 2) {
-                    val numEscalasIda = stopsText[0].text().split(" ")[0].toInt()
-                    val numEscalasVuelta = stopsText[1].text().split(" ")[0].toInt()
-                    if (numEscalasIda + numEscalasVuelta == stopsInfo.size) {
-                        stopsInfo.forEach {
-                            val airportOpt = airportRepository.findById(it.text())
-                            if(airportOpt.isPresent){
-                                val scale = Scale(
-                                    airportOpt.get(),
-                                    it.select("title").text().substringAfter("de ").substringBefore(" en"))
-                            }
 
-                        }
+                if (departTimes.size >= 2 && arrivalTimes.size >= 2 && airportNames.size >= 4 && stopsText.size >= 2) {
 
-                    }
-                }
+                    val scalesMap = getScales(
+                        numOutboundScales = if (stopsText[0].text().contains(" ")) stopsText[0].text()
+                            .split(" ")[0].toInt()
+                        else 0,
+                        numReturnScales = if (stopsText[1].text().contains(" ")) stopsText[1].text()
+                            .split(" ")[0].toInt()
+                        else 0,
+                        scalesElement = stopsInfo
+                    )
 
-                if (departTimes.size == 2 && arrivalTimes.size == 2 && airportNames.size == 4 && stopsText.size == 2) {
+                    val offers = getOffers(element)
+
                     travelOfferList.add(
-                        TravelOffer(
+                        FlightResponse(
                             outboundFlight = Flight(
-                                departTimes[0].text(),
-                                airportNames[0].text(),
-                                arrivalTimes[0].text(),
-                                airportNames[1].text()
+                                departureTime = departTimes[0].text(),
+                                departureAirport = airportService.getAirportName(
+                                    airportNames[0].text().substring(0, 3)
+                                ),
+                                arrivalTime = arrivalTimes[0].text(),
+                                arrivalAirport = airportService.getAirportName(airportNames[1].text().substring(0, 3)),
+                                scales = scalesMap.filter { it.value == 1 }.keys.toList()
                             ),
                             returnFlight = Flight(
-                                departTimes[1].text(),
-                                airportNames[2].text(),
-                                arrivalTimes[1].text(),
-                                airportNames[3].text()
-                            )
+                                departureTime = departTimes[1].text(),
+                                departureAirport = airportService.getAirportName(
+                                    airportNames[2].text().substring(0, 3)
+                                ),
+                                arrivalTime = arrivalTimes[1].text(),
+                                arrivalAirport = airportService.getAirportName(airportNames[3].text().substring(0, 3)),
+                                scales = scalesMap.filter { it.value == 2 }.keys.toList()
+                            ),
+                            offers = offers,
+                            airlineNames = airlineNames.text().split(", ")
                         )
                     )
 
                 }
 
-//                if (times.size == locations.size) {
-//                    for (i in times.indices) {
-//                        listInfos.add(TimeLocationContainer(times[i].text(), locations[i].text()))
-//                    }
-//                }
-//
-//                if (listInfos.size % 2 == 0) {
-//                    val listFlights = mutableListOf<Flight>()
-//                    for (i in 0 until listInfos.size - 1 step (2)) {
-//                        listFlights.add(
-//                            Flight(
-//                                listInfos[i].time,
-//                                listInfos[i + 1].time,
-//                                listInfos[i].location,
-//                                listInfos[i + 1].location
-//                            )
-//                        )
-//                    }
-//
-//                    listFlights.forEach { flight ->
-//                        if (flight.arrivalAirport
-//                                .substringAfterLast('(')
-//                                .substringBeforeLast(')') == destination
-//                        ) {
-//                            val index = listFlights.indexOf(flight)
-//                            searchResponseList.add(
-//                                SearchResponse(
-//                                    listFlights.subList(0, index + 1),
-//                                    listFlights.subList(index + 1, listFlights.size)
-//                                )
-//                            )
-//                        }
-//                    }
-//                }
             }
-
 
             return travelOfferList
         } catch (ex: Exception) {
-            LOGGER.error(ex.message)
+            logger.error(ex.message)
             return listOf()
         }
+
+    }
+
+
+    private fun getScales(numOutboundScales: Int, numReturnScales: Int, scalesElement: Elements): Map<Scale, Int> {
+        val scalesMap = mutableMapOf<Scale, Int>()
+        var index = 1
+
+        scalesElement.subList(0, numOutboundScales + numReturnScales).forEach { element ->
+            if (scalesElement.indexOf(element) == numOutboundScales) index = 2
+
+            scalesMap[Scale(
+                airportName = airportService.getAirportName(element.text()),
+                waitTime = element.attr("title").substringAfter("de ").substringBefore(" en")
+            )] = index
+
+        }
+        return scalesMap
+    }
+
+    private fun getOffers(element: Element): List<Offer> {
+        val listOffer = mutableListOf<Offer>()
+        val mainOfferResultClassName = "Flights-Results-FlightPriceSection"
+        val providerNameClassName = "name-only-text"
+        val extraInfoClassRegex = "[class~=-extra-info-]"
+        val priceTextClassName = "price-text"
+        val providerNameClassRegex = "[class~=providerName option-text]"
+        //MAIN OFFER
+        val mainOffer = element.getElementsByClass(mainOfferResultClassName).last()!!
+
+        listOffer.add(
+            Offer(
+                price = mainOffer.getElementsByClass(priceTextClassName)[0].text().substringBefore(' ').toInt(),
+                provider = if (mainOffer.getElementsByClass(providerNameClassName).isEmpty()) ""
+                else mainOffer.getElementsByClass(providerNameClassName)[0].text(),
+                url = "kayak.es".plus(mainOffer.getElementsByTag("a")[0].attr("href"))
+            )
+        )
+
+        //EXTRA OFFERS
+        element.select(extraInfoClassRegex).forEach {
+            listOffer.add(
+                Offer(
+                    price = it.getElementsByClass(priceTextClassName)[0].text().substringBefore('&').toInt(),
+                    provider = it.select(providerNameClassRegex)[0].text(),
+                    url = "kayak.es".plus(it.getElementsByTag("a")[0].attr("href"))
+                )
+            )
+        }
+        return listOffer
 
     }
 }

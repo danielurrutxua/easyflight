@@ -7,6 +7,9 @@ import org.springframework.data.repository.query.Param
 
 interface AirportRepository: CrudRepository<Airport, String> {
 
-    @Query("SELECT name FROM Airport WHERE name LIKE :search_text%")
-    fun loadAirportsStartingWith(@Param("search_text") searchText: String): List<String>
+    @Query("SELECT a FROM Airport a WHERE a.name LIKE :search_text%")
+    fun loadAirportsStartingWith(@Param("search_text") searchText: String): List<Airport>
+
+    @Query("SELECT name FROM Airport WHERE IATA = (:iata)")
+    fun getAirportName(iata: String): String
 }

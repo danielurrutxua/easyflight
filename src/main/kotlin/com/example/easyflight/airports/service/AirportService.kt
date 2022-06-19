@@ -1,5 +1,6 @@
 package com.example.easyflight.airports.service
 
+import com.example.easyflight.airports.exceptions.AirportNotFoundException
 import com.example.easyflight.airports.model.Airport
 import com.example.easyflight.airports.repository.AirportRepository
 import com.example.easyflight.flights.util.drivers.chrome.ChromeDriverInitializer
@@ -10,13 +11,15 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class AirportService(private val airportRepository: AirportRepository, private val driverInitializer: ChromeDriverInitializer) : AirportInterface {
+class AirportService(
+    private val airportRepository: AirportRepository,
+    private val driverInitializer: ChromeDriverInitializer
+) : AirportInterface {
 
     private val LOGGER = LoggerFactory.getLogger(AirportService::class.java)
 
     @Value("\${url.airports.code.list}")
     private lateinit var url: String
-
     override fun loadToDb() {
 
         LOGGER.info("Load Airports into DB: IN")
@@ -36,6 +39,14 @@ class AirportService(private val airportRepository: AirportRepository, private v
         LOGGER.info("Load Airports into DB: OUT")
 
     }
-
     override fun searchStartingWith(searchText: String) = airportRepository.loadAirportsStartingWith(searchText)
+    override fun getAirportName(iata: String): String {
+
+        try {
+            return iata + " " + airportRepository.getAirportName(iata)
+        } catch (ex: Exception) {
+            throw AirportNotFoundException("Airport not found, IATA: $iata")
+        }
+    }
+    override fun findById(iata: String) = airportRepository.findById(iata)
 }

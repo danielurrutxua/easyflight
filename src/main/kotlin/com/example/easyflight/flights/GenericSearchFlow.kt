@@ -1,8 +1,7 @@
 package com.example.easyflight.flights
 
-import com.example.easyflight.flights.adapters.Flight
 import com.example.easyflight.flights.adapters.FlightSearchRequest
-import com.example.easyflight.flights.adapters.TravelOffer
+import com.example.easyflight.flights.adapters.FlightResponse
 import com.example.easyflight.flights.enum.WebSources
 import com.example.easyflight.flights.util.UrlBuilder
 import com.example.easyflight.flights.util.drivers.DriverInitializer
@@ -26,32 +25,32 @@ abstract class GenericSearchFlow(
 
     protected lateinit var driver: RemoteWebDriver
 
-    private val LOGGER: Logger = LoggerFactory.getLogger(GenericSearchFlow::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(GenericSearchFlow::class.java)
 
-    fun execute(request: FlightSearchRequest, source: WebSources): List<TravelOffer> {
-        LOGGER.info("Scraping request for $source")
+    fun execute(request: FlightSearchRequest, source: WebSources): List<FlightResponse> {
+        logger.info("Scraping request for $source")
         return try {
             driver = driverInitializer.initialize(generateUrl(request, source))
-            LOGGER.info("Prepare screen before scraping: IN")
+            logger.info("Prepare screen before scraping: IN")
             prepareScreenForScraping()
-            LOGGER.info("Prepare screen before scraping: OUT")
+            logger.info("Prepare screen before scraping: OUT")
             val document = Jsoup.parse(driver.pageSource)
             //driver.quit()
-            LOGGER.info("Extract flights: IN")
+            logger.info("Extract flights: IN")
             val travelOffers = extractFlights(document, request.destination)
-            LOGGER.info("Extract flights: OUT")
-            LOGGER.info("Scraping request for $source completed")
+            logger.info("Extract flights: OUT")
+            logger.info("Scraping request for $source completed")
 
             travelOffers
         } catch (ex:Exception) {
-            LOGGER.error("Exception while scraping $source: ${ex.message}")
+            logger.error("Exception while scraping $source: ${ex.message}")
             listOf()
         }
     }
 
     protected abstract fun prepareScreenForScraping()
 
-    protected abstract fun extractFlights(document: Document, destination: String): List<TravelOffer>
+    protected abstract fun extractFlights(document: Document, destination: String): List<FlightResponse>
 
     private fun generateUrl(request: FlightSearchRequest, source: WebSources) = urlBuilder
         .setBaseUrl(

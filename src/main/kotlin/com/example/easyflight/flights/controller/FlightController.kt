@@ -1,7 +1,7 @@
 package com.example.easyflight.flights.controller
 
 import com.example.easyflight.flights.adapters.FlightSearchRequest
-import com.example.easyflight.flights.adapters.TravelOffer
+import com.example.easyflight.flights.adapters.FlightResponse
 import com.example.easyflight.flights.service.FlightSearchService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -19,7 +19,7 @@ class FlightController(private val flightSearchService: FlightSearchService) {
                @RequestParam("arrival_date")  arrivalDate: String,
                @RequestParam("adults") adults: Int,
                @RequestParam("children") children: Int)
-    : List<TravelOffer> = flightSearchService.performSearch(FlightSearchRequest(origin, destination, departureDate, arrivalDate, adults, children))
+    : List<FlightResponse> = flightSearchService.performSearch(FlightSearchRequest(origin, destination, departureDate, arrivalDate, adults, children))
 
 
     @GetMapping("/")

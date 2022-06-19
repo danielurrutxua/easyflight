@@ -1,7 +1,8 @@
 package com.example.easyflight.flights.adapters
 
-data class TravelOffer(
+data class FlightResponse(
     val outboundFlight: Flight,
     val returnFlight: Flight,
-    val price: Int
+    val offers: List<Offer>,
+    val airlineNames: List<String>
 )
