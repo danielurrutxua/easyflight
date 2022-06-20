@@ -35,7 +35,7 @@ abstract class GenericSearchFlow(
             prepareScreenForScraping()
             logger.info("Prepare screen before scraping: OUT")
             val document = Jsoup.parse(driver.pageSource)
-            //driver.quit()
+            driver.quit()
             logger.info("Extract flights: IN")
             val travelOffers = extractFlights(document, request.destination)
             logger.info("Extract flights: OUT")

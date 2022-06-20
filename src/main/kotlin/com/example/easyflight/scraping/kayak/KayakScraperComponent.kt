@@ -64,6 +64,9 @@ class KayakScraperComponent(
     @Value("\${provider.name}")
     private lateinit var providerNameClass: String
 
+    @Value("\${best.offer.url}")
+    private lateinit var bestOfferUrlClass: String
+
     @Value("\${kayak.base.url}")
     private lateinit var kayaBaseUrl: String
 
@@ -178,7 +181,7 @@ class KayakScraperComponent(
                     .toInt(),
                 provider = if (element.getElementsByClass(providerNameClass).isEmpty()) ""
                 else element.getElementsByClass(providerNameClass)[0].text(),
-                url = kayaBaseUrl.plus(element.getElementsByTag(HtmlTags.A.tag)[0].attr(HtmlAttributes.HREF.attr))
+                url = kayaBaseUrl.plus(element.getElementsByClass(bestOfferUrlClass)[0].getElementsByTag(HtmlTags.A.tag)[0].attr(HtmlAttributes.HREF.attr))
             )
 
 //            //EXTRA OFFERS
