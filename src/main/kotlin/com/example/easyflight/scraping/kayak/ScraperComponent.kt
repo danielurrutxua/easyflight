@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class KayakScraperComponent(
+class ScraperComponent(
     edgeDriverInitializer: ChromeDriverInitializer,
     urlBuilder: UrlBuilder,
     private val airportInterface: AirportInterface
@@ -70,7 +70,7 @@ class KayakScraperComponent(
     @Value("\${kayak.base.url}")
     private lateinit var kayaBaseUrl: String
 
-    private val logger: Logger = LoggerFactory.getLogger(KayakScraperComponent::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(ScraperComponent::class.java)
 
     override fun prepareScreenForScraping() {
         //CLOSE COOKIES POP-UP

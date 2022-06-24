@@ -23,6 +23,12 @@ abstract class GenericSearchFlow(
     @Value("\${base.url.flights.kayak}")
     private lateinit var baseUrlKayak: String
 
+    @Value("\${base.url.flights.momondo}")
+    private lateinit var baseUrlMomondo: String
+
+    @Value("\${url.flight.params}")
+    private lateinit var urlFlightParams: String
+
     protected lateinit var driver: RemoteWebDriver
 
     private val logger: Logger = LoggerFactory.getLogger(GenericSearchFlow::class.java)
@@ -56,7 +62,8 @@ abstract class GenericSearchFlow(
         .setBaseUrl(
             when (source) {
                 WebSources.KAYAK -> baseUrlKayak
-            }
+                WebSources.MOMONDO -> baseUrlMomondo
+            }.plus(urlFlightParams)
         ).setParamIntoUrl("origin", request.origin)
         .setParamIntoUrl("destination", request.destination)
         .setParamIntoUrl("departure-date", request.departureDate)
