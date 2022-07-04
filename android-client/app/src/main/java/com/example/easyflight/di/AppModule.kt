@@ -1,21 +1,23 @@
 package com.example.easyflight.di
 
-import android.app.Application
 import com.example.easyflight.feature_flight.data_source.service.api.FlightApiDataSource
 import com.example.easyflight.feature_flight.data_source.service.api.FlightApiService
 import com.example.easyflight.feature_flight.domain.repository.FlightRepository
 import com.example.easyflight.feature_flight.domain.repository.FlightRepositoryImpl
 import com.example.easyflight.feature_flight.domain.use_case.FlightUseCases
+import com.example.easyflight.feature_flight.domain.use_case.GetAirports
 import com.example.easyflight.feature_flight.domain.use_case.GetFlights
+import com.example.easyflight.feature_flight.domain.use_case.OpenFlightUrl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn(Singleton::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     private const val BASE_URL = ""
@@ -39,7 +41,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFlightUseCases(repository: FlightRepository): FlightUseCases {
-        return FlightUseCases(getFlights = GetFlights(repository))
+        return FlightUseCases(
+            getFlights = GetFlights(repository),
+            getAirports = GetAirports(repository),
+            openFlightUrl = OpenFlightUrl()
+        )
 
     }
 

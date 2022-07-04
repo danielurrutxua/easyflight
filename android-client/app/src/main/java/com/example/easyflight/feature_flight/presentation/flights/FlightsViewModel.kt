@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.easyflight.feature_flight.domain.model.service.request.FlightSearchRequest
 import com.example.easyflight.feature_flight.domain.use_case.FlightUseCases
-import com.example.easyflight.feature_flight.presentation.util.searchRequestFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
