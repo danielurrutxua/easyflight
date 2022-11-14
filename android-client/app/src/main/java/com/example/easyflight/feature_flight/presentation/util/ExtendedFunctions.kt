@@ -4,8 +4,21 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
 
-fun LocalDate.searchRequestFormat() =
-    this.year.toString() + "-" + this.month.value + "-" + this.dayOfMonth
+fun LocalDate.searchRequestFormat() : String {
+
+    val month = if(this.month.value.length() == 1) "0" + this.month.value
+    else this.month.value
+
+    val day = if(this.dayOfMonth.length() == 1) "0" + this.dayOfMonth
+    else this.dayOfMonth
+
+    return this.year.toString() + "-" + month + "-" + day
+}
+
+fun Int.length() = when(this) {
+    0 -> 1
+    else -> kotlin.math.log10(kotlin.math.abs(toDouble())).toInt() + 1
+}
 
 
 fun LocalDate.dateVisualizerFormat() =

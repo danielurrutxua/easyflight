@@ -11,6 +11,7 @@ import com.example.easyflight.flights.exceptions.KayakScraperException
 import com.example.easyflight.scraping.GenericSearchFlow
 import com.example.easyflight.scraping.util.UrlBuilder
 import com.example.easyflight.scraping.drivers.chrome.ChromeDriverInitializer
+import com.example.easyflight.scraping.drivers.edge.EdgeDriverInitializer
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ScraperComponent(
-    edgeDriverInitializer: ChromeDriverInitializer,
+    edgeDriverInitializer: EdgeDriverInitializer,
     urlBuilder: UrlBuilder,
     private val airportInterface: AirportInterface
 ) : GenericSearchFlow(edgeDriverInitializer, urlBuilder) {

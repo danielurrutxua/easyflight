@@ -7,11 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 class FlightRepositoryImpl(private val flightServiceDataSource: FlightServiceDataSource): FlightRepository {
 
-    override fun getFlights(flightSearchRequest: FlightSearchRequest): Flow<List<FlightsSearch>> {
-        return flightServiceDataSource.getFlights(flightSearchRequest)
-    }
+    override fun getFlights(flightSearchRequest: FlightSearchRequest) = flightServiceDataSource.getFlights(flightSearchRequest)
 
-    override fun getAirports(airportTyped: String): Flow<List<String>> {
-        return flightServiceDataSource.getAirports(airportTyped)
-    }
+    override fun getAirports(airportTyped: String) = flightServiceDataSource.getAirports(airportTyped)
+
 }

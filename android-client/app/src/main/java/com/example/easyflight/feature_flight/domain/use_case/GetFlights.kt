@@ -10,6 +10,7 @@ import com.example.easyflight.feature_flight.domain.repository.FlightRepository
 import com.example.easyflight.feature_flight.domain.util.FlightOrder
 import com.example.easyflight.feature_flight.domain.util.OrderType
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Callback
 
 class GetFlights(private val flightRepository: FlightRepository) {
 
@@ -18,7 +19,7 @@ class GetFlights(private val flightRepository: FlightRepository) {
     operator fun invoke(
         flightSearchRequest: FlightSearchRequest,
         flightOrder: FlightOrder = FlightOrder.Price(OrderType.Ascending)
-    ): Flow<List<FlightsSearch>> {
+    ): Flow<List<FlightsSearch>?> {
         if(flightSearchRequest.origin.isBlank())  {
             throw InvalidOriginAirportException("Must choose a valid Airport")
         }

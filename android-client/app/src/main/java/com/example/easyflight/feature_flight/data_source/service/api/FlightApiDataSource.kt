@@ -7,7 +7,9 @@ import com.example.easyflight.feature_flight.domain.model.service.request.Flight
 import com.example.easyflight.feature_flight.domain.model.service.response.FlightsSearch
 import com.example.easyflight.feature_flight.presentation.util.searchRequestFormat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOf
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,20 +22,19 @@ class FlightApiDataSource(private val flightsApiService: FlightApiService) :
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getFlights(flightSearchRequest: FlightSearchRequest) = callbackFlow {
-        MutableLiveData<List<FlightsSearch>>()
 
         flightsApiService.getFlights(
             flightSearchRequest.origin,
             flightSearchRequest.destination,
-            flightSearchRequest.departureDate.searchRequestFormat(),
-            flightSearchRequest.returnDate.searchRequestFormat(),
+            flightSearchRequest.departureDate.toString(),
+            flightSearchRequest.returnDate.toString(),
             flightSearchRequest.numPassengers
         ).enqueue(object : Callback<List<FlightsSearch>> {
             override fun onResponse(
                 call: Call<List<FlightsSearch>>,
                 response: Response<List<FlightsSearch>>
             ) {
-                trySend(response.body()!!)
+                trySend(response.body())
             }
 
             override fun onFailure(call: Call<List<FlightsSearch>>, t: Throwable) {

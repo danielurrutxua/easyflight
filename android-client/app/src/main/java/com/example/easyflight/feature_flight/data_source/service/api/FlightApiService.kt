@@ -14,7 +14,8 @@ interface FlightApiService {
         @Query("destination") destination: String,
         @Query("departure_date") departureDate: String,
         @Query("arrival_date") arrivalDate: String,
-        @Query("num_passengers") numPassengers: String,
+        @Query("adults") numPassengers: String,
+        @Query("children") children : String = "0"
     ): Call<List<FlightsSearch>>
 
     @GET("airports/search/starting-with")
