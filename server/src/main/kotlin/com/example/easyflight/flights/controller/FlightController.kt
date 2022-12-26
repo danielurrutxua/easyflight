@@ -19,9 +19,9 @@ class FlightController(private val flightSearchInterface: FlightSearchInterface)
     fun search(@RequestParam("origin") origin: String,
                @RequestParam("destination") destination: String,
                @RequestParam("departure_date")  departureDate: String,
-               @RequestParam("arrival_date")  arrivalDate: String,
-               @RequestParam("adults") adults: Int,
-               @RequestParam("children") children: Int)
+               @RequestParam(name = "arrival_date", required = false, defaultValue = "")  arrivalDate: String,
+               @RequestParam(name = "adults", required = false, defaultValue = "1") adults: Int,
+               @RequestParam(name = "children", required = false, defaultValue = "0") children: Int)
     : ResponseEntity<List<FlightSearchResponse>> =
         try {
             ResponseEntity.accepted().body(flightSearchInterface.performSearch(FlightSearchRequest(origin, destination, departureDate, arrivalDate, adults, children)))

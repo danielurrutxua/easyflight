@@ -4,14 +4,14 @@ import com.example.easyflight.airports.service.AirportInterface
 import com.example.easyflight.flights.adapters.Flight
 import com.example.easyflight.flights.adapters.Offer
 import com.example.easyflight.flights.adapters.Scale
+import com.example.easyflight.flights.adapters.request.FlightSearchRequest
 import com.example.easyflight.flights.adapters.response.FlightSearchResponse
-import com.example.easyflight.scraping.enum.HtmlAttributes
-import com.example.easyflight.scraping.enum.HtmlTags
 import com.example.easyflight.flights.exceptions.KayakScraperException
 import com.example.easyflight.scraping.GenericSearchFlow
-import com.example.easyflight.scraping.util.UrlBuilder
 import com.example.easyflight.scraping.drivers.chrome.ChromeDriverInitializer
-import com.example.easyflight.scraping.drivers.edge.EdgeDriverInitializer
+import com.example.easyflight.scraping.enum.HtmlAttributes
+import com.example.easyflight.scraping.enum.HtmlTags
+import com.example.easyflight.scraping.util.UrlBuilder
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -27,10 +27,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class ScraperComponent(
-    edgeDriverInitializer: EdgeDriverInitializer,
+    edgeDriverInitializer: ChromeDriverInitializer,
     urlBuilder: UrlBuilder,
     private val airportInterface: AirportInterface
 ) : GenericSearchFlow(edgeDriverInitializer, urlBuilder) {
+
+    private val LOGGER = LoggerFactory.getLogger(ScraperComponent::class.java)
 
     @Value("\${cookies.close.popup}")
     private lateinit var closePopUp: String
@@ -96,12 +98,58 @@ class ScraperComponent(
 
     }
 
-    override fun extractFlights(document: Document, destination: String): List<FlightSearchResponse> {
-        try {
+    override fun extractFlights(document: Document, request: FlightSearchRequest): List<FlightSearchResponse> =
+        if (request.arrivalDate.isBlank()) getFlightsWithoutReturn(document) else getFlightsWithReturn(document)
 
-            val travelOfferList = mutableListOf<FlightSearchResponse>()
-            document.getElementsByClass(flightResultClass).forEach { element ->
+    private fun getFlightsWithoutReturn(document: Document): List<FlightSearchResponse> {
+        val travelOfferList = mutableListOf<FlightSearchResponse>()
+        document.getElementsByClass(flightResultClass).forEach { element ->
+            try {
 
+                val departTimes = element.getElementsByClass(departTimeClass)
+                val arrivalTimes = element.getElementsByClass(arrivalTimeClass)
+                val airportNames = element.getElementsByClass(airportNameClass)
+                val scalesNumbers = element.getElementsByClass(scalesNumberClass)
+
+
+                val scalesMap = getScales(
+                    numOutboundScales = if (scalesNumbers[0].text().contains(" ")) scalesNumbers[0].text()
+                        .split(" ")[0].toInt()
+                    else 0,
+                    scalesElement = element.getElementsByClass(scalesInfoClass)
+                )
+
+                travelOfferList.add(
+                    FlightSearchResponse(
+                        outboundFlight = Flight(
+                            departureTime = departTimes[0].text(),
+                            departureAirport = airportInterface.getAirportName(
+                                airportNames[0].text().substring(0, 3)
+                            ),
+                            arrivalTime = arrivalTimes[0].text(),
+                            arrivalAirport = airportInterface.getAirportName(
+                                airportNames[1].text().substring(0, 3)
+                            ),
+                            scales = scalesMap.keys.toList()
+                        ),
+                        returnFlight = null,
+                        offer = getOffer(element),
+                        airlineNames = element.getElementsByClass(airlinesNamesClass).text().split(", ")
+                    )
+                )
+
+            } catch (ex: Exception) {
+                LOGGER.error(ex.message)
+            }
+        }
+        return travelOfferList
+    }
+
+    private fun getFlightsWithReturn(document: Document): List<FlightSearchResponse> {
+        val travelOfferList = mutableListOf<FlightSearchResponse>()
+        document.getElementsByClass(flightResultClass).forEach { element ->
+
+            try {
                 val departTimes = element.getElementsByClass(departTimeClass)
                 val arrivalTimes = element.getElementsByClass(arrivalTimeClass)
                 val airportNames = element.getElementsByClass(airportNameClass)
@@ -127,7 +175,9 @@ class ScraperComponent(
                                     airportNames[0].text().substring(0, 3)
                                 ),
                                 arrivalTime = arrivalTimes[0].text(),
-                                arrivalAirport = airportInterface.getAirportName(airportNames[1].text().substring(0, 3)),
+                                arrivalAirport = airportInterface.getAirportName(
+                                    airportNames[1].text().substring(0, 3)
+                                ),
                                 scales = scalesMap.filter { it.value == 1 }.keys.toList()
                             ),
                             returnFlight = Flight(
@@ -136,7 +186,9 @@ class ScraperComponent(
                                     airportNames[2].text().substring(0, 3)
                                 ),
                                 arrivalTime = arrivalTimes[1].text(),
-                                arrivalAirport = airportInterface.getAirportName(airportNames[3].text().substring(0, 3)),
+                                arrivalAirport = airportInterface.getAirportName(
+                                    airportNames[3].text().substring(0, 3)
+                                ),
                                 scales = scalesMap.filter { it.value == 2 }.keys.toList()
                             ),
                             offer = getOffer(element),
@@ -146,16 +198,16 @@ class ScraperComponent(
 
                 } else throw KayakScraperException("Error getting main data")
 
+            } catch (ex: Exception) {
+                LOGGER.error(ex.message)
             }
-            return travelOfferList
-        } catch (ex: Exception) {
-            throw KayakScraperException(ex.message!!)
-        }
 
+        }
+        return travelOfferList
     }
 
 
-    private fun getScales(numOutboundScales: Int, numReturnScales: Int, scalesElement: Elements): Map<Scale, Int> {
+    private fun getScales(numOutboundScales: Int, numReturnScales: Int = 0, scalesElement: Elements): Map<Scale, Int> {
         try {
             val scalesMap = mutableMapOf<Scale, Int>()
             var index = 1
@@ -182,7 +234,11 @@ class ScraperComponent(
                     .toInt(),
                 provider = if (element.getElementsByClass(providerNameClass).isEmpty()) ""
                 else element.getElementsByClass(providerNameClass)[0].text(),
-                url = kayaBaseUrl.plus(element.getElementsByClass(bestOfferUrlClass)[0].getElementsByTag(HtmlTags.A.tag)[0].attr(HtmlAttributes.HREF.attr))
+                url = kayaBaseUrl.plus(
+                    element.getElementsByClass(bestOfferUrlClass)[0].getElementsByTag(HtmlTags.A.tag)[0].attr(
+                        HtmlAttributes.HREF.attr
+                    )
+                )
             )
 
 //            //EXTRA OFFERS

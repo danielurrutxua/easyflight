@@ -11,7 +11,7 @@ class ChromeDriverInitializer(private val userAgentSelector: UserAgentSelector):
 
 
     override fun initialize(url: String): ChromeDriver {
-        System.setProperty("webdriver.chrome.driver", "WebDrivers/chromedriver90.exe")
+        System.setProperty("webdriver.chrome.driver", "WebDrivers/chromedriver108.0.5359.125.exe")
         val options = ChromeOptions()
         options.addArguments("--disable-blink-features=AutomationControlled")
         // options.setExperimentalOption("excludeSwitches", "enable-automation")

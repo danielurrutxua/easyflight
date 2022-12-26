@@ -5,7 +5,7 @@ import com.example.easyflight.flights.adapters.Offer
 
 data class FlightSearchResponse(
     val outboundFlight: Flight,
-    val returnFlight: Flight,
+    val returnFlight: Flight?,
     val offer: Offer,
     val airlineNames: List<String>
 )

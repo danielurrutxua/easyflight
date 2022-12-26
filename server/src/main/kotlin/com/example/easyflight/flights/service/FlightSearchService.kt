@@ -10,6 +10,6 @@ import org.springframework.stereotype.Service
 class FlightSearchService(private val scraperComponent: ScraperComponent): FlightSearchInterface {
 
      override fun performSearch(request: FlightSearchRequest): List<FlightSearchResponse> {
-        return scraperComponent.execute(request, WebSources.MOMONDO)
+        return scraperComponent.execute(request, WebSources.KAYAK)
     }
 }

@@ -29,6 +29,9 @@ abstract class GenericSearchFlow(
     @Value("\${url.flight.params}")
     private lateinit var urlFlightParams: String
 
+    @Value("\${url.flight.params.with.return}")
+    private lateinit var urlFlightParamsWithReturn: String
+
     protected lateinit var driver: RemoteWebDriver
 
     private val logger: Logger = LoggerFactory.getLogger(GenericSearchFlow::class.java)
@@ -41,14 +44,15 @@ abstract class GenericSearchFlow(
             prepareScreenForScraping()
             logger.info("Prepare screen before scraping: OUT")
             val document = Jsoup.parse(driver.pageSource)
-            driver.quit()
+            driver.close()
             logger.info("Extract flights: IN")
-            val travelOffers = extractFlights(document, request.destination)
+            val travelOffers = extractFlights(document, request)
             logger.info("Extract flights: OUT")
             logger.info("Scraping request for $source completed")
 
             travelOffers
-        } catch (ex:Exception) {
+        } catch (ex: Exception) {
+            driver.close()
             logger.error("Exception while scraping $source: ${ex.message}")
             listOf()
         }
@@ -56,19 +60,32 @@ abstract class GenericSearchFlow(
 
     protected abstract fun prepareScreenForScraping()
 
-    protected abstract fun extractFlights(document: Document, destination: String): List<FlightSearchResponse>
+    protected abstract fun extractFlights(document: Document, request: FlightSearchRequest): List<FlightSearchResponse>
 
-    private fun generateUrl(request: FlightSearchRequest, source: WebSources) = urlBuilder
-        .setBaseUrl(
-            when (source) {
-                WebSources.KAYAK -> baseUrlKayak
-                WebSources.MOMONDO -> baseUrlMomondo
-            }.plus(urlFlightParams)
-        ).setParamIntoUrl("origin", request.origin)
-        .setParamIntoUrl("destination", request.destination)
-        .setParamIntoUrl("departure-date", request.departureDate)
-        .setParamIntoUrl("arrival-date", request.arrivalDate)
-        .setParamIntoUrl("num-adults", request.adults)
-        .build()
+    private fun generateUrl(request: FlightSearchRequest, source: WebSources): String {
+        if (request.arrivalDate.isEmpty()) return urlBuilder
+            .setBaseUrl(
+                when (source) {
+                    WebSources.KAYAK -> baseUrlKayak
+                    WebSources.MOMONDO -> baseUrlMomondo
+                }.plus(urlFlightParams)
+            ).setParamIntoUrl("origin", request.origin)
+            .setParamIntoUrl("destination", request.destination)
+            .setParamIntoUrl("departure-date", request.departureDate)
+            .setParamIntoUrl("num-adults", request.adults)
+            .build()
+        else return urlBuilder
+            .setBaseUrl(
+                when (source) {
+                    WebSources.KAYAK -> baseUrlKayak
+                    WebSources.MOMONDO -> baseUrlMomondo
+                }.plus(urlFlightParamsWithReturn)
+            ).setParamIntoUrl("origin", request.origin)
+            .setParamIntoUrl("destination", request.destination)
+            .setParamIntoUrl("departure-date", request.departureDate)
+            .setParamIntoUrl("arrival-date", request.arrivalDate)
+            .setParamIntoUrl("num-adults", request.adults)
+            .build()
 
+    }
 }
