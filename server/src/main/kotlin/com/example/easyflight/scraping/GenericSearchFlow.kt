@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component
 
 @Component
 abstract class GenericSearchFlow(
-    private val driverInitializer: DriverInitializer,
-    private val urlBuilder: UrlBuilder
+        private val driverInitializer: DriverInitializer,
+        private val urlBuilder: UrlBuilder
 ) {
 
     @Value("\${base.url.flights.kayak}")
@@ -39,18 +39,19 @@ abstract class GenericSearchFlow(
     fun execute(request: FlightSearchRequest, source: WebSources): List<FlightSearchResponse> {
         logger.info("Scraping request for $source")
         return try {
-            driver = driverInitializer.initialize(generateUrl(request, source))
+            //driver = driverInitializer.initialize(generateUrl(request, source))
             logger.info("Prepare screen before scraping: IN")
-            prepareScreenForScraping()
+            //prepareScreenForScraping()
             logger.info("Prepare screen before scraping: OUT")
-            val document = Jsoup.parse(driver.pageSource)
-            driver.close()
+           // val document = Jsoup.parse(driver.pageSource)
+            //driver.close()
             logger.info("Extract flights: IN")
-            val travelOffers = extractFlights(document, request)
+            getKayakFLights(generateUrl(request, source))
+            //val travelOffers = extractFlights(document, request)
             logger.info("Extract flights: OUT")
             logger.info("Scraping request for $source completed")
 
-            travelOffers
+            listOf()
         } catch (ex: Exception) {
             driver.close()
             logger.error("Exception while scraping $source: ${ex.message}")
@@ -63,29 +64,31 @@ abstract class GenericSearchFlow(
     protected abstract fun extractFlights(document: Document, request: FlightSearchRequest): List<FlightSearchResponse>
 
     private fun generateUrl(request: FlightSearchRequest, source: WebSources): String {
-        if (request.arrivalDate.isEmpty()) return urlBuilder
-            .setBaseUrl(
-                when (source) {
-                    WebSources.KAYAK -> baseUrlKayak
-                    WebSources.MOMONDO -> baseUrlMomondo
-                }.plus(urlFlightParams)
-            ).setParamIntoUrl("origin", request.origin)
-            .setParamIntoUrl("destination", request.destination)
-            .setParamIntoUrl("departure-date", request.departureDate)
-            .setParamIntoUrl("num-adults", request.adults)
-            .build()
-        else return urlBuilder
-            .setBaseUrl(
-                when (source) {
-                    WebSources.KAYAK -> baseUrlKayak
-                    WebSources.MOMONDO -> baseUrlMomondo
-                }.plus(urlFlightParamsWithReturn)
-            ).setParamIntoUrl("origin", request.origin)
-            .setParamIntoUrl("destination", request.destination)
-            .setParamIntoUrl("departure-date", request.departureDate)
-            .setParamIntoUrl("arrival-date", request.arrivalDate)
-            .setParamIntoUrl("num-adults", request.adults)
-            .build()
+        return if (request.arrivalDate.isEmpty()) urlBuilder
+                .setBaseUrl(
+                        when (source) {
+                            WebSources.KAYAK -> baseUrlKayak
+                            WebSources.MOMONDO -> baseUrlMomondo
+                        }.plus(urlFlightParams)
+                ).setParamIntoUrl("origin", request.origin)
+                .setParamIntoUrl("destination", request.destination)
+                .setParamIntoUrl("departure-date", request.departureDate)
+                .setParamIntoUrl("num-adults", request.adults)
+                .build()
+        else urlBuilder
+                .setBaseUrl(
+                        when (source) {
+                            WebSources.KAYAK -> baseUrlKayak
+                            WebSources.MOMONDO -> baseUrlMomondo
+                        }.plus(urlFlightParamsWithReturn)
+                ).setParamIntoUrl("origin", request.origin)
+                .setParamIntoUrl("destination", request.destination)
+                .setParamIntoUrl("departure-date", request.departureDate)
+                .setParamIntoUrl("arrival-date", request.arrivalDate)
+                .setParamIntoUrl("num-adults", request.adults)
+                .build()
 
     }
+
+    abstract fun getKayakFLights(url: String)
 }
