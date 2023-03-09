@@ -1,13 +1,9 @@
 package com.example.easyflight.scraping
 
+import com.example.easyflight.flights.adapters.Result
 import com.example.easyflight.flights.adapters.request.FlightSearchRequest
-import com.example.easyflight.flights.adapters.response.FlightSearchResponse
 import com.example.easyflight.scraping.enum.WebSources
 import com.example.easyflight.scraping.util.UrlBuilder
-import com.example.easyflight.scraping.drivers.DriverInitializer
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.openqa.selenium.remote.RemoteWebDriver
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -16,7 +12,6 @@ import org.springframework.stereotype.Component
 
 @Component
 abstract class GenericSearchFlow(
-        private val driverInitializer: DriverInitializer,
         private val urlBuilder: UrlBuilder
 ) {
 
@@ -32,36 +27,19 @@ abstract class GenericSearchFlow(
     @Value("\${url.flight.params.with.return}")
     private lateinit var urlFlightParamsWithReturn: String
 
-    protected lateinit var driver: RemoteWebDriver
 
     private val logger: Logger = LoggerFactory.getLogger(GenericSearchFlow::class.java)
 
-    fun execute(request: FlightSearchRequest, source: WebSources): List<FlightSearchResponse> {
+    fun execute(request: FlightSearchRequest, source: WebSources): List<Result> {
         logger.info("Scraping request for $source")
         return try {
-            //driver = driverInitializer.initialize(generateUrl(request, source))
-            logger.info("Prepare screen before scraping: IN")
-            //prepareScreenForScraping()
-            logger.info("Prepare screen before scraping: OUT")
-           // val document = Jsoup.parse(driver.pageSource)
-            //driver.close()
-            logger.info("Extract flights: IN")
             getKayakFLights(generateUrl(request, source))
-            //val travelOffers = extractFlights(document, request)
-            logger.info("Extract flights: OUT")
-            logger.info("Scraping request for $source completed")
-
-            listOf()
         } catch (ex: Exception) {
-            driver.close()
+            //driver.close()
             logger.error("Exception while scraping $source: ${ex.message}")
             listOf()
         }
     }
-
-    protected abstract fun prepareScreenForScraping()
-
-    protected abstract fun extractFlights(document: Document, request: FlightSearchRequest): List<FlightSearchResponse>
 
     private fun generateUrl(request: FlightSearchRequest, source: WebSources): String {
         return if (request.arrivalDate.isEmpty()) urlBuilder
@@ -90,5 +68,5 @@ abstract class GenericSearchFlow(
 
     }
 
-    abstract fun getKayakFLights(url: String)
+    abstract fun getKayakFLights(url: String): List<Result>
 }

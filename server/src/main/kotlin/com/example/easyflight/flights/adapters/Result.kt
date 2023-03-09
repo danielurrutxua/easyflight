@@ -18,12 +18,12 @@ data class Layover(
 )
 
 data class Flight(
-        private val number: Int,
+        private val number: String,
         private val airline: Airline,
         private val departure: Departure,
         private val arrival: Arrival,
         private val duration: String,
-        private val layover: Layover
+        private val layover: Layover?
 )
 
 data class Departure(

@@ -5,5 +5,5 @@ data class Flight1 (
     val departureAirport: String,
     val arrivalTime: String,
     val arrivalAirport: String,
-    val scales: List<Layover>
+    val scales: List<Scale>
         )
