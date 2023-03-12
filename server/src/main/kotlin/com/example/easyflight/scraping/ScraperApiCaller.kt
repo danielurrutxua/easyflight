@@ -14,9 +14,9 @@ class ScraperApiCaller {
 
             LOGGER.trace("Calling scraper API /kayak")
 
-            val response = Unirest.post("$BASE_URL/kayak")
+            val response = Unirest.get("$BASE_URL/kayak")
                     .header("Authorization", API_KEY)
-                    .field("url", url)
+                    .queryString("url", url)
                     .asString()
 
             return if (response.isSuccess) {

@@ -1,13 +1,10 @@
 package com.example.easyflight.scraping.util
 
-import org.springframework.stereotype.Component
-
-@Component
 class UrlBuilder {
 
     private lateinit var url: String
 
-     fun setBaseUrl(baseUrl: String): UrlBuilder {
+      fun setBaseUrl(baseUrl: String): UrlBuilder {
         this.url = baseUrl
         return this
     }

@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class KayakService(
-) {
+class KayakService {
 
     private val LOGGER = LoggerFactory.getLogger(KayakService::class.java)
 
@@ -31,7 +30,8 @@ class KayakService(
 
             keys.map {
                 LOGGER.trace("Extracting key: $it")
-                getResult(resultsJson.getAsJsonObject(it)) }
+                getResult(resultsJson.getAsJsonObject(it))
+            }
         }
     }
 
@@ -104,15 +104,17 @@ class KayakService(
 
     private fun generateUrl(request: FlightSearchRequest): String {
         val baseUrl = "https://www.kayak.es/flights/"
+        val urlParamsWithoutReturn = "{origin}-{destination}/{departure-date}/{num-adults}adults?sort=bestflight_a"
+        val urlParamsWithReturn = "{origin}-{destination}/{departure-date}/{arrival-date}/{num-adults}adults?sort=bestflight_a"
         return if (request.arrivalDate.isEmpty()) UrlBuilder()
-                .setBaseUrl(baseUrl)
+                .setBaseUrl(baseUrl.plus(urlParamsWithoutReturn))
                 .setParamIntoUrl("origin", request.origin)
                 .setParamIntoUrl("destination", request.destination)
                 .setParamIntoUrl("departure-date", request.departureDate)
                 .setParamIntoUrl("num-adults", request.adults)
                 .build()
         else UrlBuilder()
-                .setBaseUrl(baseUrl)
+                .setBaseUrl(baseUrl.plus(urlParamsWithReturn))
                 .setParamIntoUrl("origin", request.origin)
                 .setParamIntoUrl("destination", request.destination)
                 .setParamIntoUrl("departure-date", request.departureDate)
