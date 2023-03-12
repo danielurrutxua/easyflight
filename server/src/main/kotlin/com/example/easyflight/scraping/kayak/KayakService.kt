@@ -1,72 +1,38 @@
 package com.example.easyflight.scraping.kayak
 
 import com.example.easyflight.flights.adapters.*
-import com.example.easyflight.scraping.GenericSearchFlow
-import com.example.easyflight.scraping.util.KayakCaptchaScript
+import com.example.easyflight.flights.adapters.request.FlightSearchRequest
+import com.example.easyflight.scraping.ScraperApiCaller
 import com.example.easyflight.scraping.util.UrlBuilder
-import com.example.easyflight.scraping.util.UserAgentSelector
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.util.regex.Pattern
 
 
 @Component
-class KayakScraper(
-        urlBuilder: UrlBuilder
-) : GenericSearchFlow(urlBuilder) {
+class KayakService(
+) {
 
-    private val LOGGER = LoggerFactory.getLogger(KayakScraper::class.java)
-
+    private val LOGGER = LoggerFactory.getLogger(KayakService::class.java)
 
 
-    override fun getKayakFLights(url: String): List<Result> {
-        val response = Jsoup.connect(url).header("User-Agent", UserAgentSelector.getRandom()).execute()
+    fun getResults(request: FlightSearchRequest): List<Result> {
 
-        if(response.url().toString().contains("security")){
-            KayakCaptchaScript.execute(response.url().toString())
-             getKayakFLights(url)
-        }
-        val document = response.parse()
+        val jsonString = ScraperApiCaller.kayak(generateUrl(request))
 
-        val scripts = document.select("script")
-
-        // Buscar el último script que sea de tipo "text/javascript"
-        val script = scripts.last { it.attr("type").equals("text/javascript", ignoreCase = true) }
-
-        return extractData(script)
-
-
-    }
-
-
-    private fun extractData(script: Element): List<Result> {
-        // Obtiene el contenido del script
-        val scriptContent = script.data()
-
-        // Define un patrón para extraer la sección del JSON que necesitas
-        val pattern = Pattern.compile("FlightResultsList\":(.*?),\"FlightFilterData")
-        val matcher = pattern.matcher(scriptContent)
-
-        // Verifica si el patrón coincide con el contenido del script
-        if (matcher.find()) {
-            // Extrae la sección del JSON que necesitas
-            val json = matcher.group(1)
-            // Convierte el string JSON en un objeto JSON en Kotlin
-            val resultsJson = Gson().fromJson(json, JsonObject::class.java).getAsJsonObject("results")
-            val resultList = mutableListOf<Result>()
-            resultsJson.keySet()
-                    .filter { key -> key.matches(Regex("[a-zA-Z0-9]{32}")) }
-                    .forEach {
-                        key -> resultList.add(getResult(resultsJson.getAsJsonObject(key))) }
-            return resultList
+        return if (jsonString.isNullOrBlank()) {
+            emptyList()
         } else {
-            LOGGER.error("No se encontró la sección del JSON que necesitas.")
+            val resultsJson = Gson().fromJson(jsonString, JsonObject::class.java).getAsJsonObject("results")
+            val keys = resultsJson.keySet().filter { key -> key.matches(Regex("[a-zA-Z0-9]{32}")) }
+
+            LOGGER.trace("${keys.size} result keys found")
+
+            keys.map {
+                LOGGER.trace("Extracting key: $it")
+                getResult(resultsJson.getAsJsonObject(it)) }
         }
-        return listOf()
     }
 
     private fun getResult(resultJson: JsonObject): Result {
@@ -104,7 +70,7 @@ class KayakScraper(
                     Arrival(airport, localDateTime)
                 }
                 val flightDuration = segmentJson.asJsonObject.get("duration").asString
-                val layover = segmentJson.asJsonObject.get("layover")?.asJsonObject?.let {layoverJson ->
+                val layover = segmentJson.asJsonObject.get("layover")?.asJsonObject?.let { layoverJson ->
                     Layover(
                             duration = layoverJson.asJsonObject.get("duration").asString,
                             message = layoverJson.asJsonObject.get("message").asString
@@ -115,7 +81,7 @@ class KayakScraper(
             Leg(legId, flights, duration)
         }
         val options = resultJson.getAsJsonArray("optionsByFare").map { optionsByFareJson ->
-            val options1 = optionsByFareJson.asJsonObject.getAsJsonArray("options").map {optionsJson ->
+            val options1 = optionsByFareJson.asJsonObject.getAsJsonArray("options").map { optionsJson ->
                 val url = optionsJson.asJsonObject.get("url").asString
                 val bookingId = optionsJson.asJsonObject.get("bookingId").asString
                 val price = optionsJson.asJsonObject.get("displayPrice").asString
@@ -133,6 +99,26 @@ class KayakScraper(
         }[0]
 
         return Result(resultId, legs, options)
+
+    }
+
+    private fun generateUrl(request: FlightSearchRequest): String {
+        val baseUrl = "https://www.kayak.es/flights/"
+        return if (request.arrivalDate.isEmpty()) UrlBuilder()
+                .setBaseUrl(baseUrl)
+                .setParamIntoUrl("origin", request.origin)
+                .setParamIntoUrl("destination", request.destination)
+                .setParamIntoUrl("departure-date", request.departureDate)
+                .setParamIntoUrl("num-adults", request.adults)
+                .build()
+        else UrlBuilder()
+                .setBaseUrl(baseUrl)
+                .setParamIntoUrl("origin", request.origin)
+                .setParamIntoUrl("destination", request.destination)
+                .setParamIntoUrl("departure-date", request.departureDate)
+                .setParamIntoUrl("arrival-date", request.arrivalDate)
+                .setParamIntoUrl("num-adults", request.adults)
+                .build()
 
     }
 }
