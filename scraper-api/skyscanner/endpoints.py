@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from flask_api import status, exceptions
 
-from .service import getResults
+from .service import get_results
 
 # Define la API Key
 API_KEY = "v7RWO4ybCKkTlv1UfvOuOYrWJo9XybLF5AZXXmHk39OrTuxdC45SQYpYExViHtDgyFwQMPlefsHw8cT75hy5ZZoRJ6xXBaS5KTqvMLd1CMBLXeccPMCnsj7UMf1HqZ4P"
@@ -22,7 +22,7 @@ def skyscanner_request():
 
     url = request.values['url']
     # Llama a la función getResults del archivo service.py
-    result = getResults(url)
+    result = get_results(url)
 
     if result is None:
         return jsonify({'error': 'Could not find result json'}), status.HTTP_404_NOT_FOUND
