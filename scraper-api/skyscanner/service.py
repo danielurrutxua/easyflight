@@ -2,54 +2,47 @@ import time
 import undetected_chromedriver as uc
 from selenium import webdriver
 from fake_useragent import UserAgent
-import random
-from .mitm_capture import MyAddon, captured_responses
-from mitmproxy.tools.main import mitmproxy
-from mitmproxy import options, controller, proxy
 import seleniumwire.undetected_chromedriver as webdriver
+from mitm.initializer import start_mitmproxy
+import signal
+import threading
 
-def run_mitmproxy():
-    # Configurar mitmproxy
-    addons = [MyAddon()]
-    opts = options.Options()
-    p = proxy.ProxyServer(opts)
-    m = controller.Master(opts)
-    m.server = p
-    m.addons.add(*addons)
-    m.run()
-    return m
-
-    # Ejecutar mitmproxy en un hilo diferente
-    mitmproxy(opts)
 
 def get_results(url):
 
-    # Iniciar mitmproxy en un hilo diferente
-    m = run_mitmproxy
+    #start_mitmproxy("https://mipagina.es/conductor/v1")
+    #start_mitmproxy()
 
     driver = create_chromedriver()
 
     #url = f"https://www.skyscanner.es/transporte/vuelos/ber/fnc/230317/230405/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&originentityid=27547053&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=1"
-    #url = f"http://twitter.es/"
+    #url1 = f"https://twitter.com/"
     #"https://antcpt.com/score_detector/"
     driver.get(url)
 
     try:
         # Esperar a que los resultados se carguen
-        time.sleep(5)  # Aumenta este valor si es necesario
+        time.sleep(100)  # Aumenta este valor si es necesario
     finally:
         # Cerrar navegador
         driver.quit()
 
+
+    # Cuando el hilo termina, se recuperan las respuestas capturadas
+
+
+
+"""
      # Devolver la respuesta JSON capturada, si la hay
     if not captured_responses.empty():
         captured_response = captured_responses.get()
-        m.shutdown()
+        p.terminate()
         return captured_response
     else:
         print('No JSON response was captured')
-        m.shutdown()
+        p.terminate()
         return None
+"""
     
     
 
@@ -78,10 +71,5 @@ def create_chromedriver():
 
     return driver
 
-
-if __name__ == "__main__":
-
-
-    buscar_vuelos()
 
     
