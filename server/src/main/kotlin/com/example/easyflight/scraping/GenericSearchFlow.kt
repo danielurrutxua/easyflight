@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-abstract class GenericSearchFlow(
-        private val urlBuilder: UrlBuilder
-) {
+abstract class GenericSearchFlow() {
 
     @Value("\${base.url.flights.kayak}")
     private lateinit var baseUrlKayak: String
@@ -42,28 +40,28 @@ abstract class GenericSearchFlow(
     }
 
     private fun generateUrl(request: FlightSearchRequest, source: WebSources): String {
-        return if (request.arrivalDate.isEmpty()) urlBuilder
-                .setBaseUrl(
+        return if (request.arrivalDate.isEmpty()) UrlBuilder()
+                .setBase(
                         when (source) {
                             WebSources.KAYAK -> baseUrlKayak
                             WebSources.MOMONDO -> baseUrlMomondo
                         }.plus(urlFlightParams)
-                ).setParamIntoUrl("origin", request.origin)
-                .setParamIntoUrl("destination", request.destination)
-                .setParamIntoUrl("departure-date", request.departureDate)
-                .setParamIntoUrl("num-adults", request.adults)
+                ).setParam("origin", request.origin)
+                .setParam("destination", request.destination)
+                .setParam("departure-date", request.departureDate)
+                .setParam("num-adults", request.adults)
                 .build()
-        else urlBuilder
-                .setBaseUrl(
+        else UrlBuilder()
+                .setBase(
                         when (source) {
                             WebSources.KAYAK -> baseUrlKayak
                             WebSources.MOMONDO -> baseUrlMomondo
                         }.plus(urlFlightParamsWithReturn)
-                ).setParamIntoUrl("origin", request.origin)
-                .setParamIntoUrl("destination", request.destination)
-                .setParamIntoUrl("departure-date", request.departureDate)
-                .setParamIntoUrl("arrival-date", request.arrivalDate)
-                .setParamIntoUrl("num-adults", request.adults)
+                ).setParam("origin", request.origin)
+                .setParam("destination", request.destination)
+                .setParam("departure-date", request.departureDate)
+                .setParam("arrival-date", request.arrivalDate)
+                .setParam("num-adults", request.adults)
                 .build()
 
     }

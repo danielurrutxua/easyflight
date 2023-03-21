@@ -40,7 +40,7 @@ class KayakService {
         val legs = resultJson.getAsJsonArray("legs").map { legJson ->
             val legId = legJson.asJsonObject.get("legId").asString
             val duration = legJson.asJsonObject.get("legDurationDisplay").asString
-            val flights = legJson.asJsonObject.getAsJsonArray("segments").map { segmentJson ->
+            val segments = legJson.asJsonObject.getAsJsonArray("segments").map { segmentJson ->
                 val number = segmentJson.asJsonObject.get("flightNumber").asString
                 val airline = segmentJson.asJsonObject.get("airline").asJsonObject.let { airlineJson ->
                     Airline(
@@ -76,29 +76,29 @@ class KayakService {
                             message = layoverJson.asJsonObject.get("message").asString
                     )
                 }
-                Flight(number, airline, departure, arrival, flightDuration, layover)
+                Segment(number, airline, departure, arrival, flightDuration, layover)
             }
-            Leg(legId, flights, duration)
+            Leg(legId, segments, duration)
         }
         val options = resultJson.getAsJsonArray("optionsByFare").map { optionsByFareJson ->
             val options1 = optionsByFareJson.asJsonObject.getAsJsonArray("options").map { optionsJson ->
                 val url = optionsJson.asJsonObject.get("url").asString
                 val bookingId = optionsJson.asJsonObject.get("bookingId").asString
                 val price = optionsJson.asJsonObject.get("displayPrice").asString
-                val providerInfo = optionsJson.asJsonObject.get("providerInfo").let { providerInfoJson ->
+                val agent = optionsJson.asJsonObject.get("providerInfo").let { providerInfoJson ->
                     val name = providerInfoJson.asJsonObject.get("displayName").asString
                     val logoUrl = providerInfoJson.asJsonObject.getAsJsonArray("logoUrls").map { logoUrlsJson ->
                         val providerUrl = logoUrlsJson.asJsonObject.get("image").asString
                         providerUrl
                     }[0]
-                    ProviderInfo(name, logoUrl)
+                    Agent(name, logoUrl)
                 }
-                Option(url, bookingId, price, providerInfo)
+                Option(url, bookingId, price, agent)
             }
             options1
         }[0]
 
-        return Result(resultId, legs, options)
+        return Result(resultId, legs, options, null)
 
     }
 
@@ -107,19 +107,19 @@ class KayakService {
         val urlParamsWithoutReturn = "{origin}-{destination}/{departure-date}/{num-adults}adults?sort=bestflight_a"
         val urlParamsWithReturn = "{origin}-{destination}/{departure-date}/{arrival-date}/{num-adults}adults?sort=bestflight_a"
         return if (request.arrivalDate.isEmpty()) UrlBuilder()
-                .setBaseUrl(baseUrl.plus(urlParamsWithoutReturn))
-                .setParamIntoUrl("origin", request.origin)
-                .setParamIntoUrl("destination", request.destination)
-                .setParamIntoUrl("departure-date", request.departureDate)
-                .setParamIntoUrl("num-adults", request.adults)
+                .setBase(baseUrl.plus(urlParamsWithoutReturn))
+                .setParam("origin", request.origin)
+                .setParam("destination", request.destination)
+                .setParam("departure-date", request.departureDate)
+                .setParam("num-adults", request.adults)
                 .build()
         else UrlBuilder()
-                .setBaseUrl(baseUrl.plus(urlParamsWithReturn))
-                .setParamIntoUrl("origin", request.origin)
-                .setParamIntoUrl("destination", request.destination)
-                .setParamIntoUrl("departure-date", request.departureDate)
-                .setParamIntoUrl("arrival-date", request.arrivalDate)
-                .setParamIntoUrl("num-adults", request.adults)
+                .setBase(baseUrl.plus(urlParamsWithReturn))
+                .setParam("origin", request.origin)
+                .setParam("destination", request.destination)
+                .setParam("departure-date", request.departureDate)
+                .setParam("arrival-date", request.arrivalDate)
+                .setParam("num-adults", request.adults)
                 .build()
 
     }
