@@ -29,6 +29,10 @@ class ScraperApiCaller {
 
         }
 
+        fun skyscanner(generateUrl: String): String? {
+            return null
+        }
+
     }
 
 

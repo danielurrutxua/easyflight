@@ -3,12 +3,13 @@ package com.example.easyflight.flights.adapters
 data class Result(
         private val id: String,
         private val legs: List<Leg>,
-        private val options: List<Option>
+        private val options: List<Option>,
+        val score: Double?
 )
 
 data class Leg(
         private val id: String,
-        private val flights: List<Flight>,
+        private val segments: List<Segment>,
         private val duration: String,
 )
 
@@ -17,7 +18,7 @@ data class Layover(
         private val message: String
 )
 
-data class Flight(
+data class Segment(
         private val number: String,
         private val airline: Airline,
         private val departure: Departure,
@@ -51,11 +52,11 @@ data class Airline(
 data class Option(
         private val url: String,
         private val bookingId: String,
-        private val price: String,
-        private val providerInfo: ProviderInfo
+        private val price: String?,
+        private val agent: Agent
 )
 
-data class ProviderInfo(
+data class Agent(
         private val name: String,
         private val logoUrl: String
 )
