@@ -6,5 +6,6 @@ data class FlightSearchRequest(
         val departureDate: String,
         val arrivalDate: String,
         val adults: Int,
-        val children: Int
+        val children: Int,
+        val webSources: String
 )

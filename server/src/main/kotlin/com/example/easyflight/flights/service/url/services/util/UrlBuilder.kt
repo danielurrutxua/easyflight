@@ -1,4 +1,4 @@
-package com.example.easyflight.scraping.util
+package com.example.easyflight.flights.service.url.services.util
 
 class UrlBuilder {
 

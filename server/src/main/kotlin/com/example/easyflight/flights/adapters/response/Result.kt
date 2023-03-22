@@ -1,4 +1,4 @@
-package com.example.easyflight.flights.adapters
+package com.example.easyflight.flights.adapters.response
 
 data class Result(
         private val id: String,

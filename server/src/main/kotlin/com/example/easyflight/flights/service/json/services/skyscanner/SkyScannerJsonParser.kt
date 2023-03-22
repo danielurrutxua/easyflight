@@ -1,34 +1,11 @@
-package com.example.easyflight.scraping.skyscanner
+package com.example.easyflight.flights.service.json.services.skyscanner
 
-import com.example.easyflight.flights.adapters.*
-import com.example.easyflight.flights.adapters.request.FlightSearchRequest
-import com.example.easyflight.scraping.util.UrlBuilder
-import com.google.gson.Gson
+import com.example.easyflight.flights.adapters.response.*
+import com.example.easyflight.flights.service.json.services.JsonParser
 import com.google.gson.JsonObject
-import org.slf4j.LoggerFactory
-import org.springframework.core.io.ClassPathResource
-import org.springframework.core.io.ResourceLoader
-import org.springframework.stereotype.Component
 
-
-@Component
-class SkyScannerService(private val resourceLoader: ResourceLoader) {
-
-    private val LOGGER = LoggerFactory.getLogger(SkyScannerService::class.java)
-
-    fun getResults(request: FlightSearchRequest): List<Result> {
-
-        val resource = ClassPathResource("responses.json")
-        val jsonString = resource.inputStream.bufferedReader().use { it.readText() }
-        val gson = Gson()
-        val jsonObject = gson.fromJson(jsonString, JsonObject::class.java)
-        val result = getResult(jsonObject)
-        return result.sortedBy {
-            it.score
-        }.reversed()
-    }
-
-    private fun getResult(resultJson: JsonObject): List<Result> {
+class SkyScannerJsonParser : JsonParser {
+    override fun execute(resultJson: JsonObject): List<Result> {
         return resultJson.getAsJsonArray("itineraries").map { itinerary ->
             val resultId = itinerary.asJsonObject.get("id").asString
             val score = itinerary.asJsonObject.get("score").asDouble
@@ -101,29 +78,5 @@ class SkyScannerService(private val resourceLoader: ResourceLoader) {
 
     }
 
-    private fun generateUrl(request: FlightSearchRequest): String {
-        val baseUrl = "https://www.kayak.es/flights/"
-        val urlParamsWithoutReturn = "{origin}-{destination}/{departure-date}/{num-adults}adults?sort=bestflight_a"
-        val urlParamsWithReturn = "{origin}-{destination}/{departure-date}/{arrival-date}/{num-adults}adults?sort=bestflight_a"
-        return if (request.arrivalDate.isEmpty()) UrlBuilder()
-                .setBase(baseUrl.plus(urlParamsWithoutReturn))
-                .setParam("origin", request.origin)
-                .setParam("destination", request.destination)
-                .setParam("departure-date", request.departureDate)
-                .setParam("num-adults", request.adults)
-                .build()
-        else UrlBuilder()
-                .setBase(baseUrl.plus(urlParamsWithReturn))
-                .setParam("origin", request.origin)
-                .setParam("destination", request.destination)
-                .setParam("departure-date", request.departureDate)
-                .setParam("arrival-date", request.arrivalDate)
-                .setParam("num-adults", request.adults)
-                .build()
 
-    }
 }
-
-
-
-
