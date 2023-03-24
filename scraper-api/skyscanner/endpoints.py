@@ -10,7 +10,7 @@ API_KEY = "v7RWO4ybCKkTlv1UfvOuOYrWJo9XybLF5AZXXmHk39OrTuxdC45SQYpYExViHtDgyFwQM
 endpoints = Blueprint('skyscanner_endpoints', __name__)
 
 # Define el endpoint 'kayak_request'
-@endpoints.route('/skyscanner', methods=['GET'])
+@endpoints.route('/scrape', methods=['GET'])
 def skyscanner_request():
     # Comprueba si se proporcionó una clave de API válida
     if 'Authorization' not in request.headers or request.headers['Authorization'] != API_KEY:

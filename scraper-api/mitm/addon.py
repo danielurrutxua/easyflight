@@ -1,16 +1,26 @@
-import json
 from mitmproxy import http
 import logging
+from mitm.services.skyscanner import save_skyscanner_response
 
 class CaptureAddon:
+    
+    def request(self, flow:http.HTTPFlow) -> None:
 
-    def response(self, flow: http.HTTPFlow) -> None:
+        if flow.request.url.startswith("https://www.kayak.es/s/horizon/flights/results/FlightSearchPoll?p=0"):
+            max_kayak_requests = 5
+            # Iterar sobre cada valor y enviar la petición con ese valor
+            for i in range(max_kayak_requests):
+                # Cambia el valor del parametro 'p' en la url
+                modified_url = flow.request.url.replace("p=0", f"p={i}")
+                logging.info(modified_url)
+
+                new_flow = flow.copy()
+                new_flow.request.url = modified_url
+    
+    def response(self, flow:http.HTTPFlow) -> None:
         if flow.request.url.startswith("https://www.skyscanner.es/g/conductor/v1/"):
-            logging.info("AAAAAA")
-            logging.info(flow)
-            response_text = flow.response.get_text()
-            response_json = json.loads(response_text)
-            with open('responses.json', 'w') as f:
-                json.dump(response_json, f)
+            save_skyscanner_response(flow)
 
-addons = [CaptureAddon()]               
+        if flow.request.url.startswith("https://www.kayak.es/s/horizon/flights/results/FlightSearchPoll"):
+
+addons = [CaptureAddon()]

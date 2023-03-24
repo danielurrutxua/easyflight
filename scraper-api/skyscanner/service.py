@@ -1,75 +1,57 @@
 import time
-import undetected_chromedriver as uc
-from selenium import webdriver
-from fake_useragent import UserAgent
-import seleniumwire.undetected_chromedriver as webdriver
-from mitm.initializer import start_mitmproxy
-import signal
-import threading
+import os
+import json
+from .url_parser import parse_url_params_to_json_file_name
+from .chromedriver_generator import create_chromedriver
+
 
 
 def get_results(url):
 
-    #start_mitmproxy("https://mipagina.es/conductor/v1")
-    #start_mitmproxy()
-
     driver = create_chromedriver()
 
     #url = f"https://www.skyscanner.es/transporte/vuelos/ber/fnc/230317/230405/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&originentityid=27547053&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=1"
-    #url1 = f"https://twitter.com/"
+    url1 = f"https://www.kayak.es/flights/BCN-PMI/2023-04-24/2023-04-29?sort=bestflight_a"
     #"https://antcpt.com/score_detector/"
-    driver.get(url)
+    driver.get(url1)
+    
 
     try:
         # Esperar a que los resultados se carguen
         time.sleep(100)  # Aumenta este valor si es necesario
+
+        response_json = search_captured_response(url)
+        return response_json
+
     finally:
         # Cerrar navegador
+
+#kill -9 122629
+#lsof -i :8080
+
         driver.quit()
 
 
     # Cuando el hilo termina, se recuperan las respuestas capturadas
 
+def search_captured_response(url):
+    file_name = parse_url_params_to_json_file_name(url)
+    # Construir la ruta del archivo JSON
+    ruta_archivo = os.path.join("/mitmt", file_name)
 
-
-"""
-     # Devolver la respuesta JSON capturada, si la hay
-    if not captured_responses.empty():
-        captured_response = captured_responses.get()
-        p.terminate()
-        return captured_response
+    # Verificar si el archivo existe en la ruta especificada
+    if os.path.exists(ruta_archivo):
+        # Cargar el archivo JSON en Python
+        with open(ruta_archivo, "r") as f:
+            json_data = json.load(f)
+        
+        # Hacer algo con el archivo JSON cargado, por ejemplo:
+        return json_data
     else:
-        print('No JSON response was captured')
-        p.terminate()
+        print("El archivo no existe en la ruta especificada")
         return None
-"""
-    
-    
 
-def create_chromedriver():
-    proxy_port = 8080  # Cambia este valor si mitmproxy está utilizando otro puerto
-    # Configuración de opciones
-    options = uc.ChromeOptions()
 
-    # Utilizar fake_useragent para generar un User-Agent aleatorio
-    ua = UserAgent()
-    user_agent = ua.random
-    #options.add_argument(f'user-agent={user_agent}')
-    options.add_argument(f"--proxy-server=http://localhost:{proxy_port}")
-    options.add_argument('ignore-certificate-errors')
-
-    seleniumwire_options = {  
-    'proxy': {
-        'http': 'http://localhost:8080', # user:pass@ip:port
-        'https': 'http://localhost:8080',
-        'no_proxy': 'localhost,127.0.0.1'
-    }
-    }
-
-    # Crear el driver con las opciones configuradas
-    driver = webdriver.Chrome(options=options, seleniumwire_options=seleniumwire_options)
-
-    return driver
 
 
     
