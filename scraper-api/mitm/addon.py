@@ -1,11 +1,11 @@
 from mitmproxy import http
 import logging
-from mitm.services.skyscanner import save_skyscanner_response
+from services.skyscanner import save_skyscanner_response
+from services.kayak import save_kayak_response
 
 class CaptureAddon:
     
     def request(self, flow:http.HTTPFlow) -> None:
-
         if flow.request.url.startswith("https://www.kayak.es/s/horizon/flights/results/FlightSearchPoll?p=0"):
             max_kayak_requests = 5
             # Iterar sobre cada valor y enviar la petición con ese valor
@@ -22,5 +22,7 @@ class CaptureAddon:
             save_skyscanner_response(flow)
 
         if flow.request.url.startswith("https://www.kayak.es/s/horizon/flights/results/FlightSearchPoll"):
+            save_kayak_response(flow)
 
 addons = [CaptureAddon()]
+

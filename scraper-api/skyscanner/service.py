@@ -11,7 +11,8 @@ def get_results(url):
     driver = create_chromedriver()
 
     #url = f"https://www.skyscanner.es/transporte/vuelos/ber/fnc/230317/230405/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&originentityid=27547053&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=1"
-    url1 = f"https://www.kayak.es/flights/BCN-PMI/2023-04-24/2023-04-29?sort=bestflight_a"
+    url1 = f"https://www.kayak.es/flights/ROM-LON/2023-04-24/2023-04-29?sort=bestflight_a"
+    #url2 = f"https://gida.euskadi.eus/hasiera/"
     #"https://antcpt.com/score_detector/"
     driver.get(url1)
     

@@ -3,10 +3,6 @@ from flask_api import status, exceptions
 
 app = Flask(__name__)
 
-# Importa y registra los endpoints del subdirectorio "kayak"
-from kayak.endpoints import endpoints as kayak_endpoints
-app.register_blueprint(kayak_endpoints)
-
 # Importa y registra los endpoints del subdirectorio "skyscanner"
 from skyscanner.endpoints import endpoints as skyscanner_endpoints
 app.register_blueprint(skyscanner_endpoints)
