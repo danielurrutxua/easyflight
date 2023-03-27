@@ -52,9 +52,7 @@ def save_kayak_response(flow):
     flight_results_list = None
     file_name = None
     for match in matches:
-        save_file("preformatting.json", match)
         formatted_match = add_quotes(match)
-        save_file("postformatting.json", formatted_match)
         json_data = json.loads(formatted_match)
         logging.info(json_data.get('type'))
         if 'FlightResultsList' in json_data.get('type'):
