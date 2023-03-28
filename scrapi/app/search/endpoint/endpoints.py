@@ -1,17 +1,17 @@
 from flask import Blueprint, request, jsonify, make_response
 from flask_api import status, exceptions
 
-from .service import get_results
+from ..service.service import get_results
 
 # Define la API Key
 API_KEY = "v7RWO4ybCKkTlv1UfvOuOYrWJo9XybLF5AZXXmHk39OrTuxdC45SQYpYExViHtDgyFwQMPlefsHw8cT75hy5ZZoRJ6xXBaS5KTqvMLd1CMBLXeccPMCnsj7UMf1HqZ4P"
 
 # Define el Blueprint
-endpoints = Blueprint('skyscanner_endpoints', __name__)
+endpoints = Blueprint('endpoints', __name__)
 
 # Define el endpoint 'kayak_request'
 @endpoints.route('/scrape', methods=['GET'])
-def skyscanner_request():
+def scrape_request():
     # Comprueba si se proporcionó una clave de API válida
     if 'Authorization' not in request.headers or request.headers['Authorization'] != API_KEY:
         raise exceptions.AuthenticationFailed()

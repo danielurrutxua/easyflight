@@ -1,8 +1,8 @@
 import time
 import os
 import json
-from .url_parser import parse_url_params_to_json_file_name
-from .chromedriver_generator import create_chromedriver
+from ..utils.url_parser import parse_url_params_to_json_file_name
+from ..utils.chromedriver_generator import create_chromedriver
 
 
 
@@ -15,6 +15,7 @@ def get_results(url):
     #url2 = f"https://gida.euskadi.eus/hasiera/"
     #"https://antcpt.com/score_detector/"
     driver.get(url1)
+    
     
 
     try:

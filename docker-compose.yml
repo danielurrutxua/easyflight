@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  scrapi:
+    build:
+      context: ./scrapi
+      dockerfile: Dockerfile-flask
+    ports:
+      - "5000:5000"
+    volumes:
+      - responses:/app/responses
+
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile-proxy
+    ports:
+      - "8080:8080"
+    volumes:
+      - responses:/app/responses
+
+volumes:
+  responses:

@@ -3,9 +3,9 @@ from flask_api import status, exceptions
 
 app = Flask(__name__)
 
-# Importa y registra los endpoints del subdirectorio "skyscanner"
-from skyscanner.endpoints import endpoints as skyscanner_endpoints
-app.register_blueprint(skyscanner_endpoints)
+# Importa y registra los endpoints
+from search.endpoint.endpoints import endpoints
+app.register_blueprint(endpoints)
 
 # Manejador de excepciones para autenticación fallida
 @app.errorhandler(exceptions.AuthenticationFailed)

@@ -1,0 +1,17 @@
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the mitmproxy scripts folder into the container at /app
+COPY scripts /app/scripts
+
+RUN python -m pip install --upgrade pip
+# Install mitmproxy
+RUN pip install mitmproxy
+
+EXPOSE 8080
+
+# Start mitmproxy with the main script in the mitm_scripts folder
+CMD ["mitmdump", "-s", "/app/scripts/addon.py"]

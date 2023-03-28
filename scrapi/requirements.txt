@@ -1,0 +1,4 @@
+flask
+flask_api
+selenium
+selenium-wire

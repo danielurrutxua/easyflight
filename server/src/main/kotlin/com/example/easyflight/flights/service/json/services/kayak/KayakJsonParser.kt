@@ -6,7 +6,6 @@ import com.google.gson.JsonObject
 
 class KayakJsonParser : JsonParser {
     override fun execute(resultJson: JsonObject): List<Result> {
-        resultJson.getAsJsonObject("results")
         val keys = resultJson.keySet().filter { key -> key.matches(Regex("[a-zA-Z0-9]{32}")) }
 
         return keys.map {
