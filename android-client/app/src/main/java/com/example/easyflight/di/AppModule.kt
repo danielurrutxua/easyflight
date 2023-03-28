@@ -8,6 +8,7 @@ import com.example.easyflight.feature_flight.domain.use_case.FlightUseCases
 import com.example.easyflight.feature_flight.domain.use_case.GetAirports
 import com.example.easyflight.feature_flight.domain.use_case.GetFlights
 import com.example.easyflight.feature_flight.domain.use_case.OpenFlightUrl
+import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,6 +58,4 @@ object AppModule {
             )
 
     }
-
-
 }
