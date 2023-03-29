@@ -27,6 +27,7 @@ def scrape_request():
     if result is None:
         return jsonify({'error': 'Could not find result json'}), status.HTTP_404_NOT_FOUND
     else:
+        
         response = make_response(result)
         response.headers["Content-Type"] = "application/json"
         response.status_code = 200

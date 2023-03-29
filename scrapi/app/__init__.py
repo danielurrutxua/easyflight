@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from flask_api import status, exceptions
 
 app = Flask(__name__)
