@@ -10,4 +10,4 @@ app.register_blueprint(endpoints)
 # Manejador de excepciones para autenticación fallida
 @app.errorhandler(exceptions.AuthenticationFailed)
 def handle_authentication_failed(error):
-    return jsonify({'error': 'Clave de API inválida'}), status.HTTP_401_UNAUTHORIZED
+    return jsonify({'error': 'Invalid API key'}), status.HTTP_401_UNAUTHORIZED
