@@ -12,7 +12,7 @@ def scrape(url):
     for request in driver.requests:
         if 'https://www.skyscanner.es/g/conductor/v1/' in request.url:
             body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
-            driver.quit
+            driver.quit()
             return body
     
         

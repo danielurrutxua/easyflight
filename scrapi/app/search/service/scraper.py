@@ -1,6 +1,7 @@
 from __init__ import app
 from .sources.skyscanner import scrape as scrape_skyscanner
 from .sources.kayak import scrape as scrape_kayak
+from .sources.euskadi import scrape as scrape_euskadi
 
    
 def execute(url):
@@ -10,6 +11,8 @@ def execute(url):
     if 'kayak' in url:
         app.logger.debug("Scrape kayak request")
         return scrape_kayak(url)
+    if 'euskadi' in url:
+        return scrape_euskadi(url)
 
             
 
