@@ -8,7 +8,7 @@ def create_chromedriver():
     ua = UserAgent()
     user_agent = ua.random
     options.add_argument(f'user-agent={user_agent}')
-    #options.headless = True 
+    options.headless = True 
     options.add_argument(f"--proxy-server=http://proxy:{proxy_port}")
     options.add_argument('ignore-certificate-errors')
 

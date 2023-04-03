@@ -17,4 +17,4 @@ RUN mv mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy.cert && 
 EXPOSE 8080
 
 # Start mitmproxy with the main script in the mitm_scripts folder
-CMD ["mitmdump", "-q"]
+ENTRYPOINT ["mitmdump", "-q"]
