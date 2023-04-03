@@ -23,4 +23,4 @@ EXPOSE 5000
 ENV FLASK_APP=run.py
 
 # Start the Flask app
-CMD mitmdump -q & python run.py
+CMD ["python", "run.py"]

@@ -9,13 +9,13 @@ def create_chromedriver():
     user_agent = ua.random
     options.add_argument(f'user-agent={user_agent}')
     #options.headless = True 
-    options.add_argument(f"--proxy-server=http://localhost:{proxy_port}")
+    options.add_argument(f"--proxy-server=http://proxy:{proxy_port}")
     options.add_argument('ignore-certificate-errors')
 
     seleniumwire_options = {  
     'proxy': {
-        'http': 'http://localhost:8080', # user:pass@ip:port
-        'https': 'http://localhost:8080',
+        'http': 'http://proxy:8080', # user:pass@ip:port
+        'https': 'http://proxy:8080',
         'no_proxy': 'localhost,127.0.0.1'
     }
     }

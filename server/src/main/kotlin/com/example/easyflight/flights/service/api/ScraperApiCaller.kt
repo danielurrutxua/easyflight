@@ -8,7 +8,7 @@ class ScraperApiCaller {
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(Companion::class.java)
-        private const val URL = "http://localhost:5000/scrape"
+        private const val URL = "http://scrapi:5000/scrape"
         private const val API_KEY = "v7RWO4ybCKkTlv1UfvOuOYrWJo9XybLF5AZXXmHk39OrTuxdC45SQYpYExViHtDgyFwQMPlefsHw8cT75hy5ZZoRJ6xXBaS5KTqvMLd1CMBLXeccPMCnsj7UMf1HqZ4P"
 
         fun invoke(source: WebSources, urlParam: String): String? {

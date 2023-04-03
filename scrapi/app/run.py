@@ -7,4 +7,4 @@ if __name__ == '__main__':
     handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s'))
     app.logger.addHandler(handler)
     app.logger.setLevel(logging.DEBUG)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host='server', port=5000, debug=True)

@@ -1,12 +1,44 @@
 version: '3.8'
 
 services:
+
+  server:
+    build: ./server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - scrapi
+    networks:
+      main-network:
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: m4nd4l0r14n0
+      MYSQL_DATABASE: db_easyflight
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      main-network:
+
   scrapi:
     build: ./scrapi
-    ports:
-      - "5000:5000"
-    volumes:
-      - responses:/app/responses
+    networks:
+      main-network:
+      proxy-network:
+  
+  proxy:
+    build: ./proxy
+    networks:
+      proxy-network:
+
+
+networks:
+  main-network:
+    driver: bridge
+  proxy-network:
+    driver: bridge
 
 volumes:
-  responses:
+  db_data:
