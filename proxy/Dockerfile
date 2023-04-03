@@ -14,7 +14,7 @@ RUN pip install mitmproxy
 # Add certificate
 RUN mv mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy.cert && update-ca-certificates
 
-EXPOSE 8090
+EXPOSE 8080
 
 # Start mitmproxy with the main script in the mitm_scripts folder
 CMD ["mitmdump", "-q"]
