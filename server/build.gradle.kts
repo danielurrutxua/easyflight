@@ -32,6 +32,7 @@ dependencies {
 
     //JSON Objects
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
     //DB
     implementation("javax.persistence:javax.persistence-api:2.2")

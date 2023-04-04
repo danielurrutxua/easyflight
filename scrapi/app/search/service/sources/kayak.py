@@ -18,7 +18,6 @@ class KayakScraper:
         body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
         formatted_body = get_json_from_kayak_response(body)
         if formatted_body:
-            app.logger.debug(formatted_body.keys())
             for key, value in formatted_body.items():
                 self.json_data[key] = value
             app.logger.debug(len(self.json_data))

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 @ResponseBody
 class FlightController {
 
-    @GetMapping("/search")
+    @GetMapping("/search", produces = ["application/json"])
     suspend fun search(@RequestParam("origin") origin: String,
                @RequestParam("destination") destination: String,
                @RequestParam("departure_date") departureDate: String,
@@ -24,7 +24,7 @@ class FlightController {
                @RequestParam(name = "adults", required = false, defaultValue = "1") adults: Int,
                @RequestParam(name = "children", required = false, defaultValue = "0") children: Int,
                @RequestParam(name = "web_sources", required = false) webSource: String)
-            : ResponseEntity<Map<WebSources, List<Result>>> {
+            : ResponseEntity<String> {
 
         return try {
             val response = coroutineScope {

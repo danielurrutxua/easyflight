@@ -1,4 +1,5 @@
 import time
+import json
 from .utils.chromedriver_generator import create_chromedriver
 from seleniumwire.utils import decode
 from __init__ import app

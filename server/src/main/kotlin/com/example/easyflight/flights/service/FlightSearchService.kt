@@ -17,7 +17,7 @@ class FlightSearchService {
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(Companion::class.java)
-        suspend operator fun invoke(request: FlightSearchRequest): Map<WebSources, List<Result>> {
+        suspend operator fun invoke(request: FlightSearchRequest): String {
             val urlsMap = request.webSources.split(",")
                     .associateBy(
                             { WebSources.valueOf(it) },
@@ -26,13 +26,14 @@ class FlightSearchService {
             LOGGER.info(urlsMap.toString())
 
             return coroutineScope {
-                urlsMap.map { (source, url) ->
+                val responseMap = urlsMap.map { (source, url) ->
                     async(Dispatchers.IO) {
                         val response = ScraperApiCaller.invoke(source, url)
                         val resultList = JsonParserFactory.create(source).execute(stringResponseToJsonObject(response))
                         source to resultList
                     }
                 }.awaitAll().toMap()
+                Gson().toJson(responseMap)
             }
         }
         private fun stringResponseToJsonObject(response: String?): JsonObject = Gson().fromJson(response, JsonObject::class.java)
