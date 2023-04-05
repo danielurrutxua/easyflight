@@ -10,27 +10,26 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
-import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
 import com.example.easyflight.ui.theme.Background
 import com.example.easyflight.ui.theme.GrayBorder
 import com.example.easyflight.ui.theme.GraySoft
 
 @Composable
-fun PassengersButton(viewModel: FlightsViewModel) {
+fun PassengersButton(onClick: () -> Unit, value: Int) {
 
-    val numPassengers = remember { mutableStateOf(1) }
+    val numPassengers = derivedStateOf { value }
 
     OutlinedButton(
         modifier = Modifier.padding(top = 30.dp),
         border = BorderStroke(1.dp, GrayBorder),
         shape = RoundedCornerShape(15),
         colors = ButtonDefaults.buttonColors(backgroundColor = Background),
-        onClick = { viewModel.onEvent(FlightsEvent.ShowBottomSheet) }
+        onClick = { onClick() }
     ) {
         Icon(
             imageVector = Icons.Default.Person,

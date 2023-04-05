@@ -5,16 +5,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.easyflight.feature_flight.presentation.flights.components.SearchContainer
+import com.example.easyflight.feature_flight.presentation.flights.components.SearchWindow
 import com.example.easyflight.ui.theme.Background
 import com.example.easyflight.ui.theme.EasyFlightTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Background
                 ) {
-                    SearchContainer()
+                    SearchWindow()
                 }
             }
         }
@@ -40,7 +42,7 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = White
         ) {
-            SearchContainer()
+            SearchContainer(roundTrip = true)
         }
 
     }

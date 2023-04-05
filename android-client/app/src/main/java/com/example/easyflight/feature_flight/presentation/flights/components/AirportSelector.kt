@@ -1,17 +1,21 @@
 package com.example.easyflight.feature_flight.presentation.flights.components
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.ThumbUp
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.easyflight.R
+import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
+import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
 
 @Composable
-fun AirportsSelector() {
+fun AirportsSelector(viewModel: FlightsViewModel) {
 
     val airportsRef = ConstrainedLayoutReference("airports")
     val exchangeButtonRef = ConstrainedLayoutReference("exchangeButton")
@@ -25,19 +29,21 @@ fun AirportsSelector() {
                 top.linkTo(parent.top)
             }) {
             SimpleTextField(
-                text = "Madrid, España",
                 label = "Origen",
                 cornerSizes = CornerSizes(15, 15, 0, 0),
-                icon = Icons.Filled.ThumbUp
-            )
+                drawableId = R.drawable.airplane_takeoff,
+                textFieldState = viewModel.state.value.departureAirport
+            ) { value -> viewModel.onEvent(FlightsEvent.TypeDepartureAirport(value)) }
             SimpleTextField(
                 label = "Destino",
                 cornerSizes = CornerSizes(0, 0, 15, 15),
-                icon = Icons.Default.Face
-            )
+                drawableId = R.drawable.airplane_landing,
+                textFieldState = viewModel.state.value.destinationAirport
+            ) { value -> viewModel.onEvent(FlightsEvent.TypeArrivalAirport(value)) }
         }
 
-        ExchangeAirportsButton(modifier = Modifier
+        ExchangeAirportsButton(
+            modifier = Modifier
             .width(30.dp)
             .height(30.dp)
             .constrainAs(exchangeButtonRef) {
@@ -45,7 +51,7 @@ fun AirportsSelector() {
                 top.linkTo(airportsRef.top)
                 bottom.linkTo(airportsRef.bottom)
 
-            })
+            }, onClick =  { viewModel.onEvent(FlightsEvent.SwapAirports) })
 
     }
 }

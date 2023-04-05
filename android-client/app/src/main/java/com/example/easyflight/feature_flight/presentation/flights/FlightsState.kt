@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class FlightsState(
     val flightsSearch: List<FlightsSearch> = emptyList(),
-    val departureAirport: String = "",
+    val departureAirport: String = "Madrid, España",
     val destinationAirport: String = "",
     val suggestedAirports: List<String> = emptyList(),
     val departureDate: LocalDate = LocalDate.now(),

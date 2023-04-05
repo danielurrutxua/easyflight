@@ -13,11 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.easyflight.R
+import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.ui.theme.Background
 import com.example.easyflight.ui.theme.ComponentBackground
 
 @Composable
-fun ExchangeAirportsButton(modifier: Modifier) {
+fun ExchangeAirportsButton(modifier: Modifier, onClick: () -> Unit) {
 
     Box(
         modifier = modifier
@@ -31,7 +32,7 @@ fun ExchangeAirportsButton(modifier: Modifier) {
 
     {
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { onClick() },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.swap_vertical),

@@ -2,36 +2,37 @@ package com.example.easyflight.feature_flight.presentation.flights.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
+import com.example.easyflight.ui.theme.ComponentBackground
 import com.example.easyflight.ui.theme.CyanBlue
+import com.example.easyflight.ui.theme.GraySoft
 
 @Composable
 fun AddPassengersBox(viewModel: FlightsViewModel) {
+    val adults = remember { mutableStateOf(1) }
+    val youths = remember { mutableStateOf(0) }
+    val children = remember { mutableStateOf(0) }
 
-    if(viewModel.state.value.showBottomSheet) {
+    val total = adults.value + youths.value + children.value
+    Surface(
+        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = White)
-                .clip(
-                    shape = MaterialTheme.shapes.small.copy(
-                        topStart = CornerSize(20.dp),
-                        topEnd = CornerSize(20.dp),
-                    )
-                )
+                .background(color = ComponentBackground)
                 .padding(PaddingValues(horizontal = 15.dp)),
         ) {
             Column {
@@ -42,7 +43,7 @@ fun AddPassengersBox(viewModel: FlightsViewModel) {
                 ) {
                     Text("Viajeros", color = White, fontSize = 20.sp)
                     TextButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { viewModel.onEvent(FlightsEvent.DismissBottomSheet) },
                         colors = ButtonDefaults.textButtonColors(contentColor = CyanBlue)
                     ) {
                         Text("Cancelar")
@@ -51,14 +52,19 @@ fun AddPassengersBox(viewModel: FlightsViewModel) {
                 AddPassengerRow(
                     passengerType = "Adultos",
                     ageDescription = "mayores de 18 años",
-                    defaultNum = 1
+                    value = adults
                 )
-                AddPassengerRow(passengerType = "Jóvenes", ageDescription = "12-17")
-                AddPassengerRow(passengerType = "Niños", ageDescription = "2-11")
+                Divider(color = GraySoft)
+                AddPassengerRow(value = youths, passengerType = "Jóvenes", ageDescription = "12-17")
+                Divider(color = GraySoft)
+                AddPassengerRow(value = children, passengerType = "Niños", ageDescription = "2-11")
 
                 SimpleButton(
                     text = "Aplicar",
-                    onClick = { viewModel.onEvent(FlightsEvent.DismissBottomSheet) },
+                    onClick = {
+                        viewModel.onEvent(FlightsEvent.DismissBottomSheet)
+                        viewModel.onEvent(FlightsEvent.UpdatePassengers(total))
+                              },
                     modifier = Modifier.padding(PaddingValues(top = 30.dp, bottom = 5.dp))
                 )
 
@@ -66,5 +72,6 @@ fun AddPassengersBox(viewModel: FlightsViewModel) {
             }
         }
     }
-
 }
+
+

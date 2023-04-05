@@ -9,10 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AddNumButton(icon: ImageVector, onClick: () -> Unit) {
+fun AddNumButton(drawableId: Int, onClick: () -> Unit) {
     IconButton(
         modifier = Modifier
             .background(color = Color.White, shape = RoundedCornerShape(5.dp))
@@ -21,8 +22,9 @@ fun AddNumButton(icon: ImageVector, onClick: () -> Unit) {
     ) {
         Icon(
             modifier = Modifier.size(14.dp),
-            imageVector = icon,
-            contentDescription = icon.name
+            painter = painterResource(drawableId),
+            contentDescription = "My Icon"
+            //tint = Color(android.graphics.Color.parseColor("#9ba8b0"))
         )
     }
 }

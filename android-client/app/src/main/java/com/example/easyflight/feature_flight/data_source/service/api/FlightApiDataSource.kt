@@ -20,7 +20,6 @@ class FlightApiDataSource(private val flightsApiService: FlightApiService) :
     private val tag = "FlightsApiDataSource"
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getFlights(flightSearchRequest: FlightSearchRequest) = callbackFlow {
 
         flightsApiService.getFlights(
@@ -44,7 +43,6 @@ class FlightApiDataSource(private val flightsApiService: FlightApiService) :
         })
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAirports(airportTyped: String) = callbackFlow {
         flightsApiService.getAirportsStartingWith(
             airportTyped

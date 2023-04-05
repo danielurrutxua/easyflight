@@ -44,19 +44,28 @@ class FlightsViewModel @Inject constructor(
                  **/
             }
             is FlightsEvent.TypeArrivalAirport -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    flightUseCases.getAirports(state.value.destinationAirport)
-                        .onEach { suggestedAirports ->
-                            _state.value = state.value.copy(
-                                suggestedAirports = suggestedAirports
-                            )
-                        }
-                }
+                _state.value = state.value.copy(
+                    destinationAirport = event.airport
+                )
+//                viewModelScope.launch(Dispatchers.IO) {
+//                    flightUseCases.getAirports(state.value.destinationAirport)
+//                        .onEach { suggestedAirports ->
+//                            _state.value = state.value.copy(
+//                                suggestedAirports = suggestedAirports
+//                            )
+//                        }
+//                }
             }
             is FlightsEvent.SelectFlight -> {
                 flightUseCases.openFlightUrl
             }
-            FlightsEvent.SwapAirports -> TODO()
+            FlightsEvent.SwapAirports -> {
+                _state.value = state.value.copy(
+                    departureAirport = state.value.destinationAirport,
+                    destinationAirport = state.value.departureAirport
+                )
+
+            }
 
             is FlightsEvent.SelectDepartureAirport -> {
                 _state.value = state.value.copy(
@@ -73,6 +82,22 @@ class FlightsViewModel @Inject constructor(
             FlightsEvent.ShowBottomSheet -> {
                 _state.value = state.value.copy(
                     showBottomSheet = true
+                )
+            }
+            is FlightsEvent.UpdatePassengers -> {
+                _state.value = state.value.copy(
+                    numPassengers = event.total
+                )
+
+            }
+            is FlightsEvent.SetDepartureDate -> {
+                _state.value = state.value.copy(
+                    departureDate = event.date
+                )
+            }
+            is FlightsEvent.SetReturnDate -> {
+                _state.value = state.value.copy(
+                    returnDate = event.date
                 )
             }
         }
