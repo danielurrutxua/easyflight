@@ -44,8 +44,8 @@ fun AirportsSelector(viewModel: FlightsViewModel) {
 
         ExchangeAirportsButton(
             modifier = Modifier
-            .width(30.dp)
-            .height(30.dp)
+            .width(45.dp)
+            .height(45.dp)
             .constrainAs(exchangeButtonRef) {
                 end.linkTo(airportsRef.end, margin = 40.dp)
                 top.linkTo(airportsRef.top)
