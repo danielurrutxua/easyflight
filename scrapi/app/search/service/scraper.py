@@ -11,7 +11,7 @@ def execute(url):
     if 'kayak' in url:
         app.logger.debug("Scrape kayak request")
         return scrape_kayak(url)
-    if 'euskadi' in url:
+    if 'nation' in url:
         return scrape_euskadi(url)
 
             

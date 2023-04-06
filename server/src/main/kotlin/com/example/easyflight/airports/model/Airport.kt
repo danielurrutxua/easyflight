@@ -14,8 +14,5 @@ data class Airport (
         val name: String,
 
         @Column(length = 50)
-        val city: String,
-
-        @Column(length = 50)
         val country: String
 )
