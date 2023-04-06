@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/airports")
 class AirportController(private val airportInterface: AirportInterface) {
 
-
-    @PostMapping("/load-to-db")
-    fun loadToDb() = airportInterface.loadToDb()
-
     @GetMapping("/search/starting-with")
     fun searchAirportsStartingWith(@RequestParam("search_text") searchText: String) = airportInterface.searchStartingWith(searchText)
 

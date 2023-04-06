@@ -1,0 +1,6 @@
+11.0
+4
+1       SQLCHAR       0       100     ";"     2     name        ""
+2       SQLCHAR       0       50      ";"     3     city        ""
+3       SQLCHAR       0       50      ";"     4     country     ""
+4       SQLCHAR       0       3       "\r\n"  1     iata        ""

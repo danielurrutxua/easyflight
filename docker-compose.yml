@@ -11,9 +11,10 @@ services:
       - scrapi
     networks:
       main-network:
+    restart: always
 
   db:
-    image: mysql
+    build: ./mysql
     environment:
       MYSQL_ROOT_PASSWORD: m4nd4l0r14n0
       MYSQL_DATABASE: db_easyflight
@@ -32,7 +33,6 @@ services:
     build: ./proxy
     networks:
       proxy-network:
-
 
 networks:
   main-network:
