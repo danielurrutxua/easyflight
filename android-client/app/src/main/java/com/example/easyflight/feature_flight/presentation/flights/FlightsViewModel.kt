@@ -100,6 +100,18 @@ class FlightsViewModel @Inject constructor(
                     returnDate = event.date
                 )
             }
+            is FlightsEvent.SetShowOriginResults -> {
+                _state.value = state.value.copy(
+                    showOriginResults = event.value
+                )
+
+            }
+            is FlightsEvent.SetShowDestinationResults -> {
+                _state.value = state.value.copy(
+                    showDestinationResults = event.value
+                )
+
+            }
         }
     }
 

@@ -11,5 +11,8 @@ data class FlightsState(
     val departureDate: LocalDate = LocalDate.now(),
     val returnDate: LocalDate = LocalDate.now().plusDays(3),
     val numPassengers: Int = 1,
-    val showBottomSheet: Boolean = false
+    val showBottomSheet: Boolean = false,
+    val showOriginResults: Boolean = true,
+    val showDestinationResults: Boolean = true
 )
+
