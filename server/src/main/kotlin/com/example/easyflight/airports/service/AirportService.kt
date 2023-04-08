@@ -7,6 +7,8 @@ import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.io.BufferedReader
 
@@ -15,9 +17,6 @@ import java.io.BufferedReader
 class AirportService(
     private val repository: AirportRepository
 ) : AirportInterface {
-
-    private val LOGGER = LoggerFactory.getLogger(AirportService::class.java)
-
-    override fun searchStartingWith(searchText: String) = repository.loadAirportsStartingWith(searchText)
+    override fun searchSuggested(query: String, limit: Int) = repository.searchSuggested(query, limit)
 
 }

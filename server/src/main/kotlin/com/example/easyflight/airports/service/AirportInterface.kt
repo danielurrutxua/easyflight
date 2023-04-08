@@ -4,6 +4,5 @@ import com.example.easyflight.airports.model.Airport
 import java.util.*
 
 interface AirportInterface {
-
-    fun searchStartingWith(searchText: String): List<Airport>
+    fun searchSuggested(query: String, limit: Int): List<Airport>
 }

@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/airports")
 class AirportController(private val airportInterface: AirportInterface) {
-
-    @GetMapping("/search/starting-with")
-    fun searchAirportsStartingWith(@RequestParam("search_text") searchText: String) = airportInterface.searchStartingWith(searchText)
-
-
+    @GetMapping("/search-suggested")
+    fun searchSuggested(@RequestParam("text") text: String, @RequestParam("limit") limit: Int) = airportInterface.searchSuggested(text, limit)
 }

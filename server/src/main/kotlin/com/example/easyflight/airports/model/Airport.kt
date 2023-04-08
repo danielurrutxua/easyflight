@@ -8,7 +8,7 @@ import javax.persistence.Id
 data class Airport (
         @Id
         @Column(length = 3)
-        val IATA: String,
+        val iata: String,
 
         @Column(length = 100)
         val name: String,
