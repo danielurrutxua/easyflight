@@ -8,9 +8,9 @@ services:
       - "8080:8080"
     depends_on:
       - db
-      - scrapi
     networks:
       main-network:
+        ipv4_address: 192.168.0.10
     restart: always
 
   db:
@@ -22,21 +22,30 @@ services:
       - db_data:/var/lib/mysql
     networks:
       main-network:
+    restart: always
 
   scrapi:
     build: ./scrapi
     networks:
       main-network:
       proxy-network:
+    depends_on:
+      - server
+    restart: always
   
   proxy:
     build: ./proxy
     networks:
       proxy-network:
+    restart: always
 
 networks:
   main-network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
   proxy-network:
     driver: bridge
 
