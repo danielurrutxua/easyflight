@@ -2,15 +2,21 @@ package com.example.easyflight.feature_flight.presentation.flights.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -24,13 +30,20 @@ import com.example.easyflight.ui.theme.Background
 fun AirportSuggestionList(
     searchText: String,
     onTextValueChange: (String) -> Unit,
-    onSetShowResults: (Boolean) -> Unit
+    onSetShowResults: (Boolean) -> Unit,
+    suggestedAirports: List<Airport>
 ) {
-    val searchResults = remember(searchText) { getSearchResults(searchText) }
     val focusManager = LocalFocusManager.current
+    val scrollState = rememberLazyListState()
+
     Box(modifier = Modifier.background(Background)) {
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(searchResults) { result ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .scrollable(orientation = Orientation.Vertical, state = scrollState),
+            state = scrollState
+        ) {
+            items(suggestedAirports) { result ->
                 Row(
                     modifier = Modifier
                         .clickable {
@@ -67,6 +80,8 @@ fun AirportSuggestionList(
     }
 }
 
+
+
 @Composable
 fun highlightMatchingText(text: String, query: String): AnnotatedString {
     val matchingRange = text.indexOf(query, ignoreCase = true)
@@ -84,35 +99,14 @@ fun highlightMatchingText(text: String, query: String): AnnotatedString {
     }
 }
 
-// Función para obtener los resultados de búsqueda (puedes reemplazarla con tu propia lógica)
-fun getSearchResults(query: String): List<Airport> {
-    val possibleResults = listOf(
-        Airport("JFK", "John F. Kennedy International Airport", "United States"),
-        Airport("LAX", "Los Angeles International Airport", "United States"),
-        Airport("LHR", "Heathrow Airport", "United Kingdom"),
-        Airport("CDG", "Charles de Gaulle Airport", "France")
-    )
-    val filteredResults = possibleResults.filter {
-        it.iata.contains(query, ignoreCase = true) ||
-                it.name.contains(query, ignoreCase = true) ||
-                it.name.contains(query, ignoreCase = true)
-    }
-
-    return filteredResults.sortedWith(compareBy(
-        { !it.iata.startsWith(query, ignoreCase = true) },
-        { !it.name.startsWith(query, ignoreCase = true) },
-        { !it.country.startsWith(query, ignoreCase = true) },
-        { it.iata },
-        { it.name },
-        { it.country }
-    ))
-}
-
 fun formatAirportText(airport: Airport): String {
-    val truncatedName = if (airport.name.length > 30) {
-        "${airport.name.substring(0, 30)}..."
+    val displayText = if (airport.name.length < 20) {
+        "${airport.name}, ${airport.country}"
     } else {
         airport.name
     }
-    return "$truncatedName (${airport.iata})"
+
+    val truncatedText = displayText.take(30) + if (displayText.length > 30) "..." else ""
+
+    return "$truncatedText (${airport.iata})"
 }

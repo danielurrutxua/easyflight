@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
+import com.example.easyflight.feature_flight.presentation.flights.components.search.airports.AirportsSelector
 import kotlinx.coroutines.launch
 
 
@@ -60,7 +61,7 @@ fun SearchContainer(viewModel: FlightsViewModel = hiltViewModel(), roundTrip: Bo
                     AirportsSelector(viewModel)
                     DatesVisualizer(
                         start = viewModel.state.value.departureDate,
-                        end = viewModel.state.value.departureDate,
+                        end = viewModel.state.value.returnDate,
                         onSetStartDate = { date ->
                             viewModel.onEvent(
                                 FlightsEvent.SetDepartureDate(
@@ -69,7 +70,9 @@ fun SearchContainer(viewModel: FlightsViewModel = hiltViewModel(), roundTrip: Bo
                             )
                         },
                         onSetFinalDate = { date -> viewModel.onEvent(FlightsEvent.SetReturnDate(date)) },
-                        roundTrip = roundTrip
+                        roundTrip = roundTrip,
+                        showDepartureDateError = viewModel.state.value.showDepartureDateError,
+                        showReturnDateError = viewModel.state.value.showReturnDateError
                     )
 
                     PassengersButton(

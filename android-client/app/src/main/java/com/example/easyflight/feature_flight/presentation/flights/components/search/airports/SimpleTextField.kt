@@ -1,19 +1,16 @@
-package com.example.easyflight.feature_flight.presentation.flights.components
+package com.example.easyflight.feature_flight.presentation.flights.components.search.airports
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
@@ -22,18 +19,9 @@ import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
-import com.example.easyflight.feature_flight.domain.model.Airport
-import com.example.easyflight.ui.theme.Background
-import com.example.easyflight.ui.theme.GraySoft
 import com.example.easyflight.ui.theme.ComponentBackground
-import kotlinx.coroutines.flow.filter
+import com.example.easyflight.ui.theme.GraySoft
 
 @Composable
 fun SimpleTextField(
@@ -48,7 +36,6 @@ fun SimpleTextField(
 ) {
     val mutableText = derivedStateOf { textFieldState }
     val labelColor = derivedStateOf { getLabelColor(text = textFieldState) }
-    val searchResults = remember(mutableText.value) { getSearchResults(mutableText.value) }
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
 

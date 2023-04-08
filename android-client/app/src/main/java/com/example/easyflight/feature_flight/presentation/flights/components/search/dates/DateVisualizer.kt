@@ -26,7 +26,15 @@ import java.time.LocalDate
 import java.util.*
 
 @Composable
-fun DatesVisualizer(start: LocalDate, end: LocalDate, onSetStartDate: (LocalDate) -> Unit, onSetFinalDate: (LocalDate) -> Unit, roundTrip: Boolean) {
+fun DatesVisualizer(
+    start: LocalDate,
+    end: LocalDate,
+    onSetStartDate: (LocalDate) -> Unit,
+    onSetFinalDate: (LocalDate) -> Unit,
+    roundTrip: Boolean,
+    showDepartureDateError: Boolean,
+    showReturnDateError: Boolean
+) {
 
     val mContext = LocalContext.current
 
@@ -65,46 +73,53 @@ fun DatesVisualizer(start: LocalDate, end: LocalDate, onSetStartDate: (LocalDate
             onSetFinalDate(LocalDate.of(mYear, mMonth+1, mDayOfMonth))
         }, year, month, day
     )
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(59.dp)
-            .clip(
-                shape = RoundedCornerShape(7.dp)
-            )
-            .padding(top = 20.dp)
-            .background(color = ComponentBackground),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            modifier = Modifier.padding(PaddingValues(start = 12.dp)),
-            imageVector = Icons.Default.DateRange,
-            contentDescription = "Date range",
-            tint = GraySoft
-        )
-        TextButton(
-            modifier = Modifier.padding(PaddingValues(start = 8.dp)),
-            onClick = {
-                depDatePickerDialog.show()
-            }, colors = ButtonDefaults.textButtonColors(contentColor = White)
+    Column(modifier = Modifier
+        .fillMaxWidth()){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(59.dp)
+                .clip(
+                    shape = RoundedCornerShape(7.dp)
+                )
+                .padding(top = 20.dp)
+                .background(color = ComponentBackground),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(departureDate.value.dateVisualizerFormat())
-
-        }
-        if(roundTrip) {
-            Text(" — ")
+            Icon(
+                modifier = Modifier.padding(PaddingValues(start = 12.dp)),
+                imageVector = Icons.Default.DateRange,
+                contentDescription = "Date range",
+                tint = GraySoft
+            )
             TextButton(
+                modifier = Modifier.padding(PaddingValues(start = 8.dp)),
                 onClick = {
-                    retDatePickerDialog.show()
-                },
-                colors = ButtonDefaults.textButtonColors(contentColor = White)
+                    depDatePickerDialog.show()
+                }, colors = ButtonDefaults.textButtonColors(contentColor = White)
             ) {
-                Text(returnDate.value.dateVisualizerFormat())
+                Text(departureDate.value.dateVisualizerFormat())
+
             }
+            if(roundTrip) {
+                Text(" — ")
+                TextButton(
+                    onClick = {
+                        retDatePickerDialog.show()
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = White)
+                ) {
+                    Text(returnDate.value.dateVisualizerFormat())
+                }
+            }
+
         }
 
+        if(showDepartureDateError) ErrorComponent(errorMessage = "Fecha de salida no válida")
+        if(showReturnDateError) ErrorComponent(errorMessage = "La fecha de regreso es anterior a la de salida")
     }
+
+
 }
 
 

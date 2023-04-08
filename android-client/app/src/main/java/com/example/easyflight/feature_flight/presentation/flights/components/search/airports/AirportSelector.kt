@@ -1,4 +1,4 @@
-package com.example.easyflight.feature_flight.presentation.flights.components
+package com.example.easyflight.feature_flight.presentation.flights.components.search.airports
 
 
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.easyflight.R
 import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
+import com.example.easyflight.feature_flight.presentation.flights.components.AirportSuggestionList
+import com.example.easyflight.feature_flight.presentation.flights.components.ErrorComponent
+import com.example.easyflight.feature_flight.presentation.flights.components.ExchangeAirportsButton
 
 @Composable
 fun AirportsSelector(viewModel: FlightsViewModel) {
@@ -62,7 +65,7 @@ fun AirportsSelector(viewModel: FlightsViewModel) {
                         viewModel.onEvent(FlightsEvent.TypeArrivalAirport(value))
                     },
                     onSetShowResults = { value ->
-                        viewModel.onEvent(FlightsEvent.SetShowOriginResults(value))
+                        viewModel.onEvent(FlightsEvent.SetShowDestinationResults(value))
                     }
                 )
             }
@@ -79,11 +82,18 @@ fun AirportsSelector(viewModel: FlightsViewModel) {
                     }, onClick = { viewModel.onEvent(FlightsEvent.SwapAirports) })
 
         }
+        if(viewModel.state.value.showOriginEmptyError) {
+            ErrorComponent(errorMessage = "Elige un aeropuerto origen")
+        }
+        if(viewModel.state.value.showDestinationEmptyError) {
+            ErrorComponent(errorMessage = "Elige un aeropuerto destino")
+        }
         if (viewModel.state.value.showOriginResults &&
             departureAirportText.isNotBlank()
         ) {
             AirportSuggestionList(
                 searchText = departureAirportText,
+                suggestedAirports = viewModel.state.value.suggestedAirports,
                 onTextValueChange = { value ->
                     viewModel.onEvent(FlightsEvent.TypeDepartureAirport(value))
                 },
@@ -103,7 +113,8 @@ fun AirportsSelector(viewModel: FlightsViewModel) {
                 },
                 onSetShowResults = { value ->
                     viewModel.onEvent(FlightsEvent.SetShowDestinationResults(value))
-                }
+                },
+                suggestedAirports = viewModel.state.value.suggestedAirports
             )
         }
 
