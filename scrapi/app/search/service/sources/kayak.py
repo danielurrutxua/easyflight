@@ -44,7 +44,7 @@ class KayakScraper:
     def show_more_results(self, driver):
         error = False
         try:
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'dDYU-close'))).click()
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CLASS_NAME, 'dDYU-close'))).click()
         except:
             app.logger.debug('No se pudo hacer clic en el botón "dDYU-close"')
             error = True
