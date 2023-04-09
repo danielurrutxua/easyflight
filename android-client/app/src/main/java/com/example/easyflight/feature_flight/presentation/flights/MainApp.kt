@@ -12,13 +12,13 @@ import com.example.easyflight.feature_flight.presentation.flights.components.Sea
 fun MainApp() {
     val navController = rememberNavController()
     val viewModel: FlightsViewModel = hiltViewModel()
-        NavHost(navController, startDestination = "search") {
-            composable("search") {
-                SearchScreen(viewModel, navController)
-            }
-            composable("results") {
-                ResultsScreen(viewModel.state.value.searchResults)
-            }
+    NavHost(navController, startDestination = "search") {
+        composable("search") {
+            SearchScreen(viewModel, navController)
         }
+        composable("results") {
+            ResultsScreen(mapOf())
+        }
+    }
 
 }

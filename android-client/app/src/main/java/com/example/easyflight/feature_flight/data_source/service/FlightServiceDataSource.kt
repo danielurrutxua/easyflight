@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface FlightServiceDataSource {
 
-    fun getFlights(flightSearchRequest: FlightSearchRequest): Flow<List<FlightsSearch>?>
+    fun getFlights(flightSearchRequest: FlightSearchRequest): Flow<List<FlightsSearch>>
     fun getAirports(airportTyped: String, limit: Int): Flow<List<Airport>>
 }

@@ -16,7 +16,8 @@ interface FlightApiService {
         @Query("departure_date") departureDate: String,
         @Query("arrival_date") arrivalDate: String,
         @Query("adults") numPassengers: String,
-        @Query("children") children : String = "0"
+        @Query("children") children : String = "0",
+        @Query("web_sources") webSources: String = "KAYAK,SKYSCANNER"
     ): List<FlightsSearch>
 
     @GET("airports/search-suggested")

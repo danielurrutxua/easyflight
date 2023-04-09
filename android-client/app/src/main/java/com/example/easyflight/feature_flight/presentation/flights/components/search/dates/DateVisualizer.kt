@@ -102,7 +102,7 @@ fun DatesVisualizer(
 
             }
             if(roundTrip) {
-                Text(" — ")
+                Text(" — ", color = White)
                 TextButton(
                     onClick = {
                         retDatePickerDialog.show()

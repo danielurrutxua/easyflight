@@ -12,7 +12,7 @@ class GetFlights(private val flightRepository: FlightRepository) {
     @Throws(InvalidSearchRequestDataException::class)
     operator fun invoke(
         flightSearchRequest: FlightSearchRequest
-    ): Flow<List<FlightsSearch>?> {
+    ): Flow<List<FlightsSearch>> {
         return flightRepository.getFlights(flightSearchRequest)
     }
 }

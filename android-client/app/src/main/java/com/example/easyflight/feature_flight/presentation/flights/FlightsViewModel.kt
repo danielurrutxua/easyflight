@@ -8,7 +8,6 @@ import com.example.easyflight.feature_flight.domain.model.service.request.Flight
 import com.example.easyflight.feature_flight.domain.use_case.FlightUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -148,21 +147,29 @@ class FlightsViewModel @Inject constructor(
         )
     }
 
-    private fun getFlights() {
+    private suspend fun getFlights() {
         setIsLoading(true)
         flightUseCases.getFlights(
             FlightSearchRequest(
-                origin = state.value.departureAirport,
-                destination = state.value.destinationAirport,
+                origin = getIata(state.value.departureAirport),
+                destination = getIata(state.value.destinationAirport),
                 departureDate = state.value.departureDate,
                 returnDate = state.value.returnDate,
                 numPassengers = state.value.numPassengers.toString()
             )
-        ).onEach { flightsSearch ->
+        ).collect{ results ->
             _state.value = state.value.copy(
-                searchResults = flightsSearch!!
+                searchResults = results
             )
+            setIsLoading(false)
         }
-        setIsLoading(false)
+
+    }
+
+    private fun getIata(input: String): String {
+        if (input.length < 5) {
+            return "El String es demasiado corto"
+        }
+        return input.substring(input.length - 4, input.length - 1)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.easyflight.feature_flight.presentation.flights.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Tab
@@ -31,7 +32,7 @@ fun SearchScreen(viewModel: FlightsViewModel, navController: NavController) {
     if(viewModel.state.value.isLoading){
         LoadingScreen()
     } else{
-        Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().background(Background)) {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = Background,
