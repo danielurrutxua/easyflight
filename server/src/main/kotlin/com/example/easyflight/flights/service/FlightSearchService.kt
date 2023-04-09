@@ -1,14 +1,16 @@
 package com.example.easyflight.flights.service
 
 import com.example.easyflight.flights.adapters.request.FlightSearchRequest
-import com.example.easyflight.flights.adapters.response.Result
 import com.example.easyflight.flights.service.api.ScraperApiCaller
 import com.example.easyflight.flights.service.json.JsonParserFactory
 import com.example.easyflight.flights.service.source.WebSources
 import com.example.easyflight.flights.service.url.UrlGeneratorFactory
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -30,6 +32,7 @@ class FlightSearchService {
                     async(Dispatchers.IO) {
                         val response = ScraperApiCaller.invoke(source, url)
                         val resultList = JsonParserFactory.create(source).execute(stringResponseToJsonObject(response))
+                        LOGGER.info(source.name +": "+ resultList.size+ " results")
                         source to resultList
                     }
                 }.awaitAll().toMap()
