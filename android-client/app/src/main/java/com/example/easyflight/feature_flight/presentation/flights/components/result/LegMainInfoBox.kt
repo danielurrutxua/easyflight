@@ -4,9 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -24,7 +26,7 @@ import java.time.temporal.ChronoUnit
 @Composable
 fun LegMainInfoBox(leg: LegMainInfo) {
     Box {
-        Column {
+        Column{
             Row {
                 // Primera fila, primera columna
                 Text(
@@ -34,48 +36,44 @@ fun LegMainInfoBox(leg: LegMainInfo) {
                         }
                     }
                 )
-            }
-            Row {
+
                 // Primera fila, segunda columna
                 if (leg.stop) {
-                    Row {
+                    Row(modifier = Modifier.align(Alignment.CenterVertically)) {
                         Spacer(
                             modifier = Modifier
-                                .fillMaxWidth(0.5f)
+                                .width(10.dp) // Agregado para limitar el ancho del Spacer
                                 .height(1.dp)
                                 .background(Color.Gray)
                         )
                         Surface(
                             modifier = Modifier
                                 .width(10.dp)
-                                .height(10.dp),
+                                .height(2.dp),
                             shape = RoundedCornerShape(4.dp),
                             color = Color.Gray,
                             border = BorderStroke(1.dp, Color.Gray)
                         ) {}
                         Spacer(
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .width(10.dp) // Agregado para limitar el ancho del Spacer
                                 .height(1.dp)
                                 .background(Color.Gray)
                         )
                     }
                 } else {
-                    Spacer(
+                    Divider(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .width(10.dp) // Agregado para limitar el ancho del Divider
                             .height(1.dp)
                             .background(Color.Gray)
                     )
                 }
-
-            }
-            Row {
                 // Primera fila, tercera columna
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color.White)) {
-                            append(leg.timeO)
+                            append(leg.timeD)
                         }
                         if (leg.nextDay) {
                             withStyle(style = SpanStyle(fontSize = 12.sp, color = Color.Gray)) {
@@ -84,17 +82,17 @@ fun LegMainInfoBox(leg: LegMainInfo) {
                         }
                     }
                 )
+
             }
-        }
-        Column {
             Row {
+
                 // Segunda fila, primera columna
                 Text(
                     text = leg.origin,
                     color = Color.White
                 )
-            }
-            Row {
+
+
                 // Segunda fila, segunda columna
                 Text(
                     text = timeDifference(leg.timeO, leg.timeD, leg.nextDay),
@@ -102,8 +100,8 @@ fun LegMainInfoBox(leg: LegMainInfo) {
                     fontSize = 14.sp,
                     modifier = Modifier.offset(y = (-4).dp)
                 )
-            }
-            Row {
+
+
                 // Segunda fila, tercera columna
                 Text(
                     text = leg.destination,
@@ -111,6 +109,8 @@ fun LegMainInfoBox(leg: LegMainInfo) {
                 )
             }
         }
+
+
     }
 }
 
@@ -129,3 +129,5 @@ fun timeDifference(time1: String, time2: String, nextDay: Boolean): String {
 
     return "%d h %d m".format(hours, minutes)
 }
+
+

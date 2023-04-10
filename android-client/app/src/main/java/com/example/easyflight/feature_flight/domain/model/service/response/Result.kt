@@ -1,62 +1,62 @@
 package com.example.easyflight.feature_flight.domain.model.service.response
 
 data class Result(
-    private val id: String,
-    private val legs: List<Leg>,
-    private val options: List<Option>,
+    val id: String,
+    val legs: List<Leg>,
+    val options: List<Option>,
     val score: Double?
 )
 
 data class Leg(
-    private val id: String,
-    private val segments: List<Segment>,
-    private val duration: String,
+     val id: String,
+     val segments: List<Segment>,
+     val duration: String,
 )
 
 data class Layover(
-    private val duration: String,
-    private val message: String
+     val duration: String,
+     val message: String
 )
 
 data class Segment(
-    private val number: String,
-    private val airline: Airline,
-    private val departure: Departure,
-    private val arrival: Arrival,
-    private val duration: String,
-    private val layover: Layover?
+     val number: String,
+     val airline: Airline,
+     val departure: Departure,
+     val arrival: Arrival,
+     val duration: String,
+     val layover: Layover?
 )
 
 data class Departure(
-    private val airport: Airport,
-    private val localDateTime: String,
+     val airport: Airport,
+     val localDateTime: String,
 
     )
 
 data class Arrival(
-    private val airport: Airport,
-    private val localDateTime: String
+     val airport: Airport,
+     val localDateTime: String
 )
 
 data class Airport(
-    private val code: String,
-    private val name: String
+     val code: String,
+     val name: String
 )
 
 data class Airline(
-    private val code: String,
-    private val name: String,
-    private val logoUrl: String
+     val code: String,
+     val name: String,
+     val logoUrl: String
 )
 
 data class Option(
-    private val url: String,
-    private val bookingId: String,
-    private val price: String?,
-    private val agent: Agent
+     val url: String,
+     val bookingId: String,
+     val price: String,
+     val agent: Agent
 )
 
 data class Agent(
-    private val name: String,
-    private val logoUrl: String
+     val name: String,
+     val logoUrl: String
 )
