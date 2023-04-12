@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/flights")
 @ResponseBody
-class FlightController {
+class FlightController(private val flightSearchService: FlightSearchService) {
 
     @GetMapping("/search", produces = ["application/json"])
     suspend fun search(@RequestParam("origin") origin: String,
@@ -28,7 +28,7 @@ class FlightController {
 
         return try {
             val response = coroutineScope {
-                FlightSearchService.invoke(FlightSearchRequest(origin, destination, departureDate, arrivalDate, adults, children, webSource))
+                flightSearchService.invoke(FlightSearchRequest(origin, destination, departureDate, arrivalDate, adults, children, webSource))
             }
             ResponseEntity.accepted().body(response)
         } catch (ex: ScraperException) {

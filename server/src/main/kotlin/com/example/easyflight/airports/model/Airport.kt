@@ -1,18 +1,16 @@
 package com.example.easyflight.airports.model
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
-data class Airport (
+data class Airline (
         @Id
-        @Column(length = 3)
-        val iata: String,
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        val id: Long? = null,
 
-        @Column(length = 100)
+        @Column(length = 100, unique = true, nullable = false)
         val name: String,
 
-        @Column(length = 50)
-        val country: String
+        @Column(length = 500, nullable = false)
+        val logoUrl: String
 )

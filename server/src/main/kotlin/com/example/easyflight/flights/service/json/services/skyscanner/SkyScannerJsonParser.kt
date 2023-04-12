@@ -1,11 +1,12 @@
 package com.example.easyflight.flights.service.json.services.skyscanner
 
+import com.example.easyflight.airline.repository.AirlineRepository
 import com.example.easyflight.flights.adapters.response.*
 import com.example.easyflight.flights.service.json.services.JsonParser
 import com.google.gson.JsonObject
 import org.slf4j.LoggerFactory
 
-class SkyScannerJsonParser : JsonParser {
+class SkyScannerJsonParser(private val airlineRepository: AirlineRepository) : JsonParser {
     private val LOGGER = LoggerFactory.getLogger(SkyScannerJsonParser::class.java)
     override fun execute(resultJson: JsonObject): List<Result> {
         return resultJson.getAsJsonArray("itineraries")?.let { itineraries ->
@@ -30,7 +31,7 @@ class SkyScannerJsonParser : JsonParser {
                                     }[0].let { carrierJson ->
                                         val name = carrierJson.asJsonObject.get("name").asString
                                         val code = carrierJson.asJsonObject.get("alt_id").asString
-                                        val url = "PENDIENTE"
+                                        val url = airlineRepository.findUrlByName(name) ?: ""
                                         Airline(code, name, url)
                                     }
                                 }

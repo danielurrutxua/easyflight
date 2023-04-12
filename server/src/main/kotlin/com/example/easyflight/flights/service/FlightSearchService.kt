@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class FlightSearchService {
+class FlightSearchService(private val jsonParserFactory: JsonParserFactory) {
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(Companion::class.java)
+
+        private val LOGGER = LoggerFactory.getLogger(FlightSearchService::class.java)
         suspend operator fun invoke(request: FlightSearchRequest): String {
             val urlsMap = request.webSources.split(",")
                     .associateBy(
@@ -31,7 +31,7 @@ class FlightSearchService {
                 val responseMap = urlsMap.map { (source, url) ->
                     async(Dispatchers.IO) {
                         val response = ScraperApiCaller.invoke(source, url)
-                        val resultList = JsonParserFactory.create(source).execute(stringResponseToJsonObject(response))
+                        val resultList = jsonParserFactory.create(source).execute(stringResponseToJsonObject(response))
                         LOGGER.info(source.name +": "+ resultList.size+ " results")
                         source to resultList
                     }
@@ -41,7 +41,7 @@ class FlightSearchService {
         }
         private fun stringResponseToJsonObject(response: String?): JsonObject = Gson().fromJson(response, JsonObject::class.java)
 
-    }
+
 
 
 

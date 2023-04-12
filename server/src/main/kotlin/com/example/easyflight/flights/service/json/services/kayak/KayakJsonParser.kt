@@ -1,10 +1,14 @@
 package com.example.easyflight.flights.service.json.services.kayak
 
+import com.example.easyflight.airline.repository.AirlineRepository
 import com.example.easyflight.flights.adapters.response.*
 import com.example.easyflight.flights.service.json.services.JsonParser
 import com.google.gson.JsonObject
+import org.slf4j.LoggerFactory
 
-class KayakJsonParser : JsonParser {
+class KayakJsonParser(private val airlineRepository: AirlineRepository) : JsonParser {
+
+    private val LOGGER = LoggerFactory.getLogger(KayakJsonParser::class.java)
     override fun execute(resultJson: JsonObject): List<Result> {
         val keys = resultJson.keySet().filter { key -> key.matches(Regex("[a-zA-Z0-9]{32}")) }
 
@@ -18,11 +22,16 @@ class KayakJsonParser : JsonParser {
                 val segments = legJson.asJsonObject.getAsJsonArray("segments").map { segmentJson ->
                     val number = segmentJson.asJsonObject.get("flightNumber").asString
                     val airline = segmentJson.asJsonObject.get("airline").asJsonObject.let { airlineJson ->
+
+                        val name = airlineJson.get("name").asString
+                        val logoUrl = airlineJson.get("logoUrl").asString
+                        saveAirline(name, logoUrl)
                         Airline(
                                 code = airlineJson.get("code").asString,
-                                name = airlineJson.get("name").asString,
-                                logoUrl = airlineJson.get("logoUrl").asString
+                                name,
+                                logoUrl
                         )
+
                     }
                     val departure = segmentJson.asJsonObject.get("departure").asJsonObject.let { departureJson ->
                         val localDateTime = departureJson.get("isoDateTimeLocal").asString
@@ -59,7 +68,7 @@ class KayakJsonParser : JsonParser {
                 val options1 = optionsByFareJson.asJsonObject.getAsJsonArray("options").map { optionsJson ->
                     val url = optionsJson.asJsonObject.get("url").asString
                     val bookingId = optionsJson.asJsonObject.get("bookingId").asString
-                    val price = optionsJson.asJsonObject.get("displayPrice").asString
+                    val price = optionsJson.asJsonObject.get("displayPrice").asString.split(" ")[0]
                     val agent = optionsJson.asJsonObject.get("providerInfo").let { providerInfoJson ->
                         val name = providerInfoJson.asJsonObject.get("displayName").asString
                         val logoUrl = providerInfoJson.asJsonObject.getAsJsonArray("logoUrls").map { logoUrlsJson ->
@@ -74,6 +83,15 @@ class KayakJsonParser : JsonParser {
             }[0]
 
             Result(resultId, legs, options, null)
+        }
+
+    }
+
+    private fun saveAirline(name: String, logoUrl: String) {
+        try {
+            airlineRepository.save(com.example.easyflight.airports.model.Airline(name = name, logoUrl = logoUrl))
+        } catch(ex: Exception){
+            LOGGER.info("Airline already saved")
         }
 
     }
