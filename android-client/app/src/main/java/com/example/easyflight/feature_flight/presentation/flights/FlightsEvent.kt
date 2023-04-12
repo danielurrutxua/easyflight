@@ -18,4 +18,5 @@ sealed class FlightsEvent {
     object SwapAirports : FlightsEvent()
     object ShowBottomSheet : FlightsEvent()
     object DismissBottomSheet : FlightsEvent()
+    object ResetResults : FlightsEvent()
 }

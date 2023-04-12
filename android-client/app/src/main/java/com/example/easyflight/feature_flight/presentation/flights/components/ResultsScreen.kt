@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.example.easyflight.feature_flight.domain.model.service.response.Airline
 import com.example.easyflight.feature_flight.domain.model.service.response.Result
 import com.example.easyflight.feature_flight.presentation.flights.components.result.FlightMainInfoBox
 import com.example.easyflight.feature_flight.presentation.flights.components.result.adapters.FlightMainInfo
@@ -66,22 +67,26 @@ fun getFlightMainInfo(result: Result) = FlightMainInfo(
         destination = result.legs[0].segments.last().arrival.airport.code,
         timeD = getHour(result.legs[0].segments[0].departure.localDateTime),
         timeO = getHour(result.legs[0].segments.last().arrival.localDateTime),
+        duration = result.legs[0].duration,
+        airline = Airline(result.legs[0].segments[0].airline.code, result.legs[0].segments[0].airline.name,result.legs[0].segments[0].airline.logoUrl),
         nextDay = nextDay(
             result.legs[0].segments[0].departure.localDateTime,
             result.legs[0].segments.last().arrival.localDateTime
         ),
-        stop = result.legs[0].segments.size > 2
+        stops = result.legs[0].segments.size - 1,
     ),
     leg2 = LegMainInfo(
         origin = result.legs[1].segments[0].departure.airport.code,
         destination = result.legs[1].segments.last().arrival.airport.code,
         timeD = getHour(result.legs[1].segments[0].departure.localDateTime),
         timeO = getHour(result.legs[1].segments.last().arrival.localDateTime),
+        duration = result.legs[1].duration,
+        airline = Airline(result.legs[1].segments[0].airline.code, result.legs[1].segments[0].airline.name,result.legs[1].segments[0].airline.logoUrl),
         nextDay = nextDay(
             result.legs[1].segments[0].departure.localDateTime,
             result.legs[1].segments.last().arrival.localDateTime
         ),
-        stop = result.legs[1].segments.size > 2
+        stops = result.legs[1].segments.size - 1
     ),
     airlines = getAirlines(result),
     price = result.options[0].price,

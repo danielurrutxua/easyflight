@@ -108,6 +108,11 @@ class FlightsViewModel @Inject constructor(
                 )
 
             }
+            FlightsEvent.ResetResults -> {
+                _state.value = state.value.copy(
+                    searchResults = emptyMap()
+                )
+            }
         }
     }
 

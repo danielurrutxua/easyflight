@@ -12,7 +12,7 @@ class GetFlights(private val flightRepository: FlightRepository) {
     @Throws(InvalidSearchRequestDataException::class)
     operator fun invoke(
         flightSearchRequest: FlightSearchRequest
-    ): Flow<List<FlightsSearch>> {
+    ): Flow<Map<String, List<com.example.easyflight.feature_flight.domain.model.service.response.Result>>> {
         return flightRepository.getFlights(flightSearchRequest)
     }
 }

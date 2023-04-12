@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
 import com.example.easyflight.feature_flight.presentation.flights.LoadingScreen
 import com.example.easyflight.ui.theme.Background
@@ -27,6 +28,7 @@ fun SearchScreen(viewModel: FlightsViewModel, navController: NavController) {
         navController.navigate("results") {
             popUpTo(navController.graph.startDestinationId)
         }
+
     }
 
     if(viewModel.state.value.isLoading){
