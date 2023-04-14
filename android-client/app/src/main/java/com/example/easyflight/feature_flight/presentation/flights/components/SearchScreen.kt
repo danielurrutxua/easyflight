@@ -11,30 +11,33 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavController
-import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
 import com.example.easyflight.feature_flight.presentation.flights.LoadingScreen
 import com.example.easyflight.ui.theme.Background
 
 @Composable
-fun SearchScreen(viewModel: FlightsViewModel, navController: NavController) {
+fun SearchScreen(
+    viewModel: FlightsViewModel,
+    onNavigateToResults: () -> Unit
+) {
     // Agrega esta parte para manejar el estado de las pestañas
     val tabs = listOf("Ida y vuelta", "Ida")
     var selectedTabIndex by remember { mutableStateOf(0) }
 
-    if(viewModel.state.value.searchResults.isNotEmpty()){
-        // Navega a la nueva pantalla para mostrar los resultados
-        navController.navigate("results") {
-            popUpTo(navController.graph.startDestinationId)
+    // Cuando searchResults deja de estar vacío, navega a la segunda pantalla
+    LaunchedEffect(viewModel.state.value.searchResults) {
+        if (viewModel.state.value.searchResults.isNotEmpty()) {
+            onNavigateToResults()
         }
-
     }
 
     if(viewModel.state.value.isLoading){
         LoadingScreen()
     } else{
-        Column(Modifier.fillMaxSize().background(Background)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(Background)) {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
                 backgroundColor = Background,

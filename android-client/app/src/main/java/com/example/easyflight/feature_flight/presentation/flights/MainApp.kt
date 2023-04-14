@@ -1,7 +1,5 @@
 package com.example.easyflight.feature_flight.presentation.flights
 
-import com.example.easyflight.feature_flight.domain.model.service.response.Result
-
 import android.content.Context
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -9,6 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.easyflight.feature_flight.domain.model.service.response.Result
 import com.example.easyflight.feature_flight.presentation.flights.components.ResultsScreen
 import com.example.easyflight.feature_flight.presentation.flights.components.SearchScreen
 import com.google.gson.Gson
@@ -21,16 +20,20 @@ import java.io.InputStreamReader
 @Composable
 fun MainApp() {
     val navController = rememberNavController()
-    val viewModel: FlightsViewModel = hiltViewModel()
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var resultMap by remember { mutableStateOf<Map<String, List<Result>>?>(null) }
+    val viewModel: FlightsViewModel = hiltViewModel()
     NavHost(navController, startDestination = "search") {
         composable("search") {
-            SearchScreen(viewModel, navController)
+            SearchScreen(viewModel) { navController.navigate("results") }
         }
         composable("results") {
+            ResultsScreen(viewModel.state.value.searchResults)
+        }
+
+        /*composable("results") {
             // Llama a readJsonFile en un CoroutineScope
 
 
@@ -45,15 +48,20 @@ fun MainApp() {
             //}
 
             resultMap = viewModel.state.value.searchResults
-            viewModel.onEvent(FlightsEvent.ResetResults)
+            //viewModel.onEvent(FlightsEvent.ResetResults)
             ResultsScreen(resultMap!!)
-        }
+        }*/
 
     }
 
 }
 
-fun readJsonFile(context: Context, scope: CoroutineScope, callback: (Map<String, List<Result>>) -> Unit) {
+
+fun readJsonFile(
+    context: Context,
+    scope: CoroutineScope,
+    callback: (Map<String, List<Result>>) -> Unit
+) {
     scope.launch {
         val assetManager = context.assets
         val inputStream = assetManager.open("result.json")

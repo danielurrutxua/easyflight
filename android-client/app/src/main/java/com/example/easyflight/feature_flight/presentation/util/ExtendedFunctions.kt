@@ -4,6 +4,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
 
+
 fun LocalDate.searchRequestFormat() : String {
 
     val month = if(this.month.value.length() == 1) "0" + this.month.value
@@ -56,4 +57,7 @@ fun Month.getSpanishFormatted() = when (this.value) {
         ""
     }
 }
+
+
+
 

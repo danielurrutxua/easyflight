@@ -177,4 +177,5 @@ class FlightsViewModel @Inject constructor(
         }
         return input.substring(input.length - 4, input.length - 1)
     }
+
 }
