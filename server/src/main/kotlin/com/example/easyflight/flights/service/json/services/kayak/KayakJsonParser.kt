@@ -68,7 +68,7 @@ class KayakJsonParser(private val airlineRepository: AirlineRepository) : JsonPa
                 val options1 = optionsByFareJson.asJsonObject.getAsJsonArray("options").map { optionsJson ->
                     val url = optionsJson.asJsonObject.get("url").asString
                     val bookingId = optionsJson.asJsonObject.get("bookingId").asString
-                    val price = optionsJson.asJsonObject.get("displayPrice").asString.split(" ")[0]
+                    val price = filterDigits(optionsJson.asJsonObject.get("displayPrice").asString)
                     val agent = optionsJson.asJsonObject.get("providerInfo").let { providerInfoJson ->
                         val name = providerInfoJson.asJsonObject.get("displayName").asString
                         val logoUrl = providerInfoJson.asJsonObject.getAsJsonArray("logoUrls").map { logoUrlsJson ->
@@ -90,9 +90,13 @@ class KayakJsonParser(private val airlineRepository: AirlineRepository) : JsonPa
     private fun saveAirline(name: String, logoUrl: String) {
         try {
             airlineRepository.save(com.example.easyflight.airports.model.Airline(name = name, logoUrl = logoUrl))
-        } catch(ex: Exception){
-            LOGGER.info("Airline already saved")
+        } catch(_: Exception){
+
         }
 
+    }
+
+    private fun filterDigits(inputString: String): String {
+        return inputString.filter { it.isDigit() }
     }
 }

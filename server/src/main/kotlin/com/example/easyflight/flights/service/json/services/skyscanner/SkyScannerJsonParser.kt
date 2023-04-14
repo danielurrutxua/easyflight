@@ -5,6 +5,7 @@ import com.example.easyflight.flights.adapters.response.*
 import com.example.easyflight.flights.service.json.services.JsonParser
 import com.google.gson.JsonObject
 import org.slf4j.LoggerFactory
+import java.lang.Math.ceil
 
 class SkyScannerJsonParser(private val airlineRepository: AirlineRepository) : JsonParser {
     private val LOGGER = LoggerFactory.getLogger(SkyScannerJsonParser::class.java)
@@ -18,7 +19,7 @@ class SkyScannerJsonParser(private val airlineRepository: AirlineRepository) : J
                         legJson.asJsonObject.get("id").asString.equals(legId.asString)
                     }[0].asJsonObject.let { legJson ->
                         val id = legJson.get("id").asString
-                        val duration = legJson.get("duration").asString
+                        val duration = convertMinutesToHoursAndMinutes(legJson.get("duration").asString)
                         val segments = legJson.getAsJsonArray("segment_ids").map { segmentId ->
                             resultJson.asJsonObject.getAsJsonArray("segments").filter { segmentJson ->
                                 segmentJson.asJsonObject.get("id").asString.equals(segmentId.asString)
@@ -65,7 +66,7 @@ class SkyScannerJsonParser(private val airlineRepository: AirlineRepository) : J
                 }
                 val options = itinerary.asJsonObject.get("pricing_options").asJsonArray.map { pricingOption ->
                     val bookingId = pricingOption.asJsonObject.get("id").asString
-                    val price = pricingOption.asJsonObject.getAsJsonObject("price").get("amount")?.asDouble.toString()
+                    val price = kotlin.math.ceil(pricingOption.asJsonObject.getAsJsonObject("price").get("amount")?.asDouble!!).toString()
                     val url = pricingOption.asJsonObject.getAsJsonArray("items")[0].asJsonObject.get("url").asString
                     val agentId = pricingOption.asJsonObject.getAsJsonArray("items")[0].asJsonObject.get("agent_id").asString
                     val agent = resultJson.getAsJsonArray("agents").filter { agentJson ->
@@ -79,12 +80,20 @@ class SkyScannerJsonParser(private val airlineRepository: AirlineRepository) : J
                 }
                 Result(resultId, legs, options, score)
             }
-        } ?: emptyList()
+        }?.sortedByDescending { it.score } ?: emptyList()
 
     }
-    private fun emptyList(): List<Result>{
+
+    private fun emptyList(): List<Result> {
         LOGGER.info("No itineraries found in response")
         return emptyList()
+    }
+
+    private fun convertMinutesToHoursAndMinutes(minutesString: String): String {
+        val minutes = minutesString.toInt()
+        val hours = minutes / 60
+        val remainingMinutes = minutes % 60
+        return "${hours}h ${remainingMinutes}m"
     }
 
 
