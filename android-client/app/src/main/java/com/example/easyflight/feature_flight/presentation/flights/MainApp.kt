@@ -25,32 +25,29 @@ fun MainApp() {
     val coroutineScope = rememberCoroutineScope()
     var resultMap by remember { mutableStateOf<Map<String, List<Result>>?>(null) }
     val viewModel: FlightsViewModel = hiltViewModel()
-    NavHost(navController, startDestination = "search") {
+    NavHost(navController, startDestination = "results") {
         composable("search") {
             SearchScreen(viewModel) { navController.navigate("results") }
         }
+//        composable("results") {
+//            ResultsScreen(viewModel.state.value.searchResults)
+//        }
+
         composable("results") {
-            ResultsScreen(viewModel.state.value.searchResults)
-        }
-
-        /*composable("results") {
             // Llama a readJsonFile en un CoroutineScope
 
 
             // Llama a readJsonFile en un CoroutineScope
-            //readJsonFile(context, coroutineScope) { result ->
-              //  resultMap = result
-            //z}
+            readJsonFile(context, coroutineScope) { result ->
+                resultMap = result
+            }
 
             // Inicializa ResultsScreen solo si resultMap no es null
-            //if (resultMap != null) {
-              //  ResultsScreen(resultMap!!)
-            //}
+            if (resultMap != null) {
+                ResultsScreen(resultMap!!)
+            }
 
-            resultMap = viewModel.state.value.searchResults
-            //viewModel.onEvent(FlightsEvent.ResetResults)
-            ResultsScreen(resultMap!!)
-        }*/
+        }
 
     }
 

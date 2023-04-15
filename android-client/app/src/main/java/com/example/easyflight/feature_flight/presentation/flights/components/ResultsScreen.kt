@@ -1,12 +1,19 @@
 package com.example.easyflight.feature_flight.presentation.flights.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.example.easyflight.R
 import com.example.easyflight.feature_flight.domain.model.service.response.Airline
 import com.example.easyflight.feature_flight.domain.model.service.response.Result
 import com.example.easyflight.feature_flight.presentation.flights.components.result.FlightMainInfoBox
@@ -30,17 +37,39 @@ fun ResultsScreen(data: Map<String, List<Result>>) {
     Column(Modifier.background(Background)) {
         TabRow(
             selectedTabIndex = selectedTabIndex,
-            backgroundColor = MaterialTheme.colors.surface,
-            contentColor = LocalContentColor.current
+            backgroundColor = Color.Transparent,
+            contentColor = LocalContentColor.current,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                    height = 1.dp,
+                    color = Color.White
+                )
+            }
         ) {
             sources.forEachIndexed { index, source ->
                 Tab(
-                    text = { Text(source) },
                     selected = selectedTabIndex == index,
                     onClick = {
                         selectedTabIndex = index
                     }
-                )
+                ) {
+                    if (index == 0) {
+                        val painter = painterResource(R.drawable.skyscanner_logo)
+                        Image(
+                            painter = painter,
+                            contentDescription = "Skyscanner Logo",
+                            modifier = Modifier.size(256.dp, 64.dp)
+                        )
+                    } else {
+                        val painter = painterResource(R.drawable.kayak_logo)
+                        Image(
+                            painter = painter,
+                            contentDescription = "Kayak Logo",
+                            modifier = Modifier.size(256.dp, 64.dp)
+                        )
+                    }
+                }
             }
         }
 
