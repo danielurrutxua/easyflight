@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +24,7 @@ fun DatesBox(start: LocalDate, end: LocalDate?) {
         Text(
             text = getDatesString(start, end),
             color = Color.Black,
-            style = MaterialTheme.typography.body1,
+            fontWeight = FontWeight.Bold,
             fontSize = 13.sp
         )
     }

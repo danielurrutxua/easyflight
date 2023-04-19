@@ -127,21 +127,21 @@ fun ResultsScreen(
 
 fun getFlightMainInfo(result: Result) = FlightMainInfo(
     leg1 = LegMainInfo(
-        origin = result.legs[0].segments[0].departure.airport.code,
-        destination = result.legs[0].segments.last().arrival.airport.code,
-        timeD = getHour(result.legs[0].segments[0].departure.localDateTime),
-        timeO = getHour(result.legs[0].segments.last().arrival.localDateTime),
+        origin = result.legs.first().segments[0].departure.airport.code,
+        destination = result.legs.first().segments.last().arrival.airport.code,
+        timeD = getHour(result.legs.first().segments[0].departure.localDateTime),
+        timeO = getHour(result.legs.first().segments.last().arrival.localDateTime),
         duration = result.legs[0].duration,
         airline = Airline(
-            result.legs[0].segments[0].airline.code,
-            result.legs[0].segments[0].airline.name,
-            result.legs[0].segments[0].airline.logoUrl
+            result.legs.first().segments[0].airline.code,
+            result.legs.first().segments[0].airline.name,
+            result.legs.first().segments[0].airline.logoUrl
         ),
         nextDay = nextDay(
-            result.legs[0].segments[0].departure.localDateTime,
-            result.legs[0].segments.last().arrival.localDateTime
+            result.legs.first().segments[0].departure.localDateTime,
+            result.legs.first().segments.last().arrival.localDateTime
         ),
-        stops = result.legs[0].segments.size - 1,
+        stops = result.legs.first().segments.size - 1,
     ),
     leg2 = LegMainInfo(
         origin = result.legs[1].segments[0].departure.airport.code,
