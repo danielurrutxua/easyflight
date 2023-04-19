@@ -7,5 +7,6 @@ data class FlightSearchRequest(
     val destination: String,
     val departureDate: LocalDate,
     val returnDate: LocalDate,
-    val numPassengers: String
+    val numPassengers: String,
+    val roundTrip: Boolean
 )

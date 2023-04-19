@@ -25,7 +25,7 @@ class FlightsViewModel @Inject constructor(
         when (event) {
             is FlightsEvent.Search -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    if (validData()) getFlights()
+                    if (validData()) getFlights(event.roundTrip)
                 }
             }
             is FlightsEvent.TypeDepartureAirport -> {
@@ -152,17 +152,19 @@ class FlightsViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getFlights() {
+    private suspend fun getFlights(roundTrip: Boolean) {
         setIsLoading(true)
-        flightUseCases.getFlights(
-            FlightSearchRequest(
+        _state.value = state.value.copy(
+            searchRequest = FlightSearchRequest(
                 origin = getIata(state.value.departureAirport),
                 destination = getIata(state.value.destinationAirport),
                 departureDate = state.value.departureDate,
                 returnDate = state.value.returnDate,
-                numPassengers = state.value.numPassengers.toString()
+                numPassengers = state.value.numPassengers.toString(),
+                roundTrip = roundTrip
             )
-        ).collect{ results ->
+        )
+        flightUseCases.getFlights(_state.value.searchRequest!!).collect { results ->
             _state.value = state.value.copy(
                 searchResults = results
             )

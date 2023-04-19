@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
 import com.example.easyflight.feature_flight.presentation.flights.LoadingScreen
+import com.example.easyflight.feature_flight.presentation.flights.components.search.SearchContainer
 import com.example.easyflight.ui.theme.Background
 
 @Composable

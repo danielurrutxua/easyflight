@@ -4,17 +4,7 @@ package com.example.easyflight.feature_flight.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHost
 import com.example.easyflight.feature_flight.presentation.flights.MainApp
-import com.example.easyflight.feature_flight.presentation.flights.components.SearchContainer
-import com.example.easyflight.feature_flight.presentation.flights.components.SearchScreen
-import com.example.easyflight.ui.theme.Background
 import com.example.easyflight.ui.theme.EasyFlightTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,16 +21,16 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    EasyFlightTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = White
-        ) {
-            SearchContainer(roundTrip = true)
-        }
-
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    EasyFlightTheme {
+//        Surface(
+//            modifier = Modifier.fillMaxSize(),
+//            color = White
+//        ) {
+//            SearchContainer(roundTrip = true)
+//        }
+//
+//    }
+//}

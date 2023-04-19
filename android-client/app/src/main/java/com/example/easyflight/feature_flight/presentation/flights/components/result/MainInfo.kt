@@ -1,7 +1,14 @@
 package com.example.easyflight.feature_flight.presentation.flights.components.result
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -14,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.easyflight.feature_flight.presentation.flights.components.result.adapters.FlightMainInfo
 import com.example.easyflight.ui.theme.ComponentBackground
-import com.example.easyflight.ui.theme.GrayText
 
 @Composable
-fun FlightMainInfoBox(flight: FlightMainInfo) {
+fun FlightMainInfoBox(flight: FlightMainInfo, navigateToDetails: () -> Unit) {
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,9 +33,10 @@ fun FlightMainInfoBox(flight: FlightMainInfo) {
                 color = ComponentBackground,
                 shape = RoundedCornerShape(8.dp)
             )
-    ) {
-
-
+            .clickable(
+                onClick = { navigateToDetails() }
+            )
+    ){
         Column(
             Modifier
                 .fillMaxWidth()

@@ -1,8 +1,13 @@
 package com.example.easyflight.feature_flight.presentation.flights.components.result
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,13 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.example.easyflight.feature_flight.presentation.flights.components.result.adapters.LegMainInfo
 import com.example.easyflight.ui.theme.GrayText
 
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun LegMainInfoBox(leg: LegMainInfo) {
     Box {
@@ -31,8 +34,8 @@ fun LegMainInfoBox(leg: LegMainInfo) {
                         .size(25.dp)
                         .background(Color.White)
                 ) {
-                    Image(
-                        painter = rememberImagePainter(leg.airline.logoUrl),
+                    AsyncImage(
+                        model = leg.airline.logoUrl,
                         contentDescription = "${leg.airline.name} logo",
                         modifier = Modifier.size(25.dp)
                     )

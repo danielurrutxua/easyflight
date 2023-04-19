@@ -1,4 +1,4 @@
-package com.example.easyflight.feature_flight.presentation.flights.components
+package com.example.easyflight.feature_flight.presentation.flights.components.search
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,16 +14,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
+import com.example.easyflight.feature_flight.presentation.flights.components.AddPassengersBox
+import com.example.easyflight.feature_flight.presentation.flights.components.DatesVisualizer
+import com.example.easyflight.feature_flight.presentation.flights.components.PassengersButton
+import com.example.easyflight.feature_flight.presentation.flights.components.SimpleButton
 import com.example.easyflight.feature_flight.presentation.flights.components.search.airports.AirportsSelector
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SearchContainer(viewModel: FlightsViewModel = hiltViewModel(), roundTrip: Boolean) {
+fun SearchContainer(viewModel: FlightsViewModel, roundTrip: Boolean) {
 
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetVisible = viewModel.state.value.showBottomSheet

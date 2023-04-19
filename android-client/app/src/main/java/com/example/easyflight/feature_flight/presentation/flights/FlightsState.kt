@@ -1,6 +1,7 @@
 package com.example.easyflight.feature_flight.presentation.flights
 
 import com.example.easyflight.feature_flight.domain.model.Airport
+import com.example.easyflight.feature_flight.domain.model.service.request.FlightSearchRequest
 import com.example.easyflight.feature_flight.domain.model.service.response.Result
 import java.time.LocalDate
 
@@ -29,6 +30,7 @@ data class FlightsState(
 
     //Search
     val searchResults: Map<String, List<Result>> = emptyMap(),
+    val searchRequest: FlightSearchRequest? = null,
     val isLoading: Boolean = false
 
 
