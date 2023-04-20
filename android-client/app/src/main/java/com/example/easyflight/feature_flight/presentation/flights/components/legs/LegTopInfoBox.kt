@@ -20,9 +20,15 @@ import com.example.easyflight.feature_flight.domain.model.service.response.Leg
 import com.example.easyflight.feature_flight.presentation.flights.components.details.DatesBox
 import com.example.easyflight.feature_flight.presentation.flights.components.result.getStopsText
 import java.time.LocalDate
+import java.time.LocalDateTime
+
+import java.time.format.DateTimeFormatter
+
+
+
 
 @Composable
-fun LegTopInfoBox(leg: Leg, departureDate: LocalDate){
+fun LegTopInfoBox(leg: Leg){
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
         Text(
             text = getDestinationName(leg),
@@ -36,11 +42,16 @@ fun LegTopInfoBox(leg: Leg, departureDate: LocalDate){
             color = Color.White,
         )
         Spacer(modifier = Modifier.height(15.dp))
-        DatesBox(start =departureDate )
+        DatesBox(start =toLocalDate(leg.segments.first().departure.localDateTime) )
         Spacer(modifier = Modifier.height(15.dp))
         Row {
             Icon(painter = painterResource(id = R.drawable.schedule), contentDescription = "schedule icon", tint = Color.White)
             Text(text = " ${leg.duration}  ·  ${getStopsText(leg.segments.size - 1)}", color = Color.White)
         }
     }
+}
+
+fun toLocalDate(date: String): LocalDate {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    return LocalDateTime.parse(date, formatter).toLocalDate()
 }

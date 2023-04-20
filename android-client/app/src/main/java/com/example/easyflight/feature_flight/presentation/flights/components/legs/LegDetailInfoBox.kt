@@ -22,16 +22,17 @@ import com.example.easyflight.feature_flight.domain.model.service.response.Leg
 import com.example.easyflight.feature_flight.presentation.flights.components.legs.segments.SegmentInfoBox
 import com.example.easyflight.ui.theme.GrayText
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun LegDetailInfoBox(request: FlightSearchRequest, leg: Leg) {
+fun LegDetailInfoBox(leg: Leg) {
     Column(
         Modifier
             .fillMaxWidth()
             .padding(20.dp), horizontalAlignment = Alignment.Start) {
-        LegTopInfoBox(leg = leg, departureDate = request.departureDate)
+        LegTopInfoBox(leg = leg)
         Spacer(modifier = Modifier.height(15.dp))
         leg.segments.forEachIndexed { index, segment ->
             SegmentInfoBox(segment)

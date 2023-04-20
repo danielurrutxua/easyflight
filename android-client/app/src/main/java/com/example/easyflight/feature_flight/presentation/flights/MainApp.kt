@@ -30,14 +30,23 @@ fun MainApp() {
     val coroutineScope = rememberCoroutineScope()
     var resultMap by remember { mutableStateOf<Map<String, List<Result>>?>(null) }
     val viewModel = hiltViewModel<FlightsViewModel>()
-    NavHost(navController, startDestination = "results") {
+    NavHost(navController, startDestination = "search") {
         composable("search") {
             SearchScreen(viewModel) { navController.navigate("results") }
         }
-//        composable("results") {
-//            ResultsScreen(viewModel.state.value.searchResults, request = viewModel.state.value.searchRequest!!)
-//        }
+        composable("results") {
+            val navigateToDetails: (Int, Int) -> Unit = { selectedTabIndex, itemIndex ->
+                navController.navigate("details/$selectedTabIndex/$itemIndex")
+            }
 
+            ResultsScreen(
+                viewModel.state.value.searchResults,
+                request = viewModel.state.value.searchRequest!!,
+                onBack = { navController.popBackStack() },
+                navigateToDetails = navigateToDetails
+            )
+        }
+/***
         composable("results") {
             val navigateToDetails: (Int, Int) -> Unit = { selectedTabIndex, itemIndex ->
                 navController.navigate("details/$selectedTabIndex/$itemIndex")
@@ -60,6 +69,7 @@ fun MainApp() {
             }
 
         }
+**/
         composable("details/{selectedTabIndex}/{itemIndex}") { backStackEntry ->
             val selectedTabIndex =
                 backStackEntry.arguments?.getString("selectedTabIndex")?.toIntOrNull() ?: 0
@@ -74,8 +84,8 @@ fun MainApp() {
             }
 
             DetailsScreen(
-                request = getSampleRequest(),
-                data = getResultItem(resultMap!!, selectedTabIndex, itemIndex),
+                request = viewModel.state.value.searchRequest!!,
+                data = getResultItem(viewModel.state.value.searchResults, selectedTabIndex, itemIndex),
                 onBack = { navController.popBackStack() },
                 onOpenProviders = openProviders,
                 onOpenLegsDetail = openLegsDetail
@@ -93,7 +103,7 @@ fun MainApp() {
             val resultId = backStackEntry.arguments?.getString("resultId")
             val result = findResultById(resultMap!!, resultId!!)!!
 
-            LegsDetailScreen(getSampleRequest(), result) { navController.popBackStack() }
+            LegsDetailScreen(result) { navController.popBackStack() }
         }
 
     }
