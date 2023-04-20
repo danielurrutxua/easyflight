@@ -1,13 +1,13 @@
 package com.example.easyflight.flights.service.json.services.skyscanner
 
+import com.example.easyflight.agent.repository.AgentRepository
 import com.example.easyflight.airline.repository.AirlineRepository
 import com.example.easyflight.flights.adapters.response.*
 import com.example.easyflight.flights.service.json.services.JsonParser
 import com.google.gson.JsonObject
 import org.slf4j.LoggerFactory
-import java.lang.Math.ceil
 
-class SkyScannerJsonParser(private val airlineRepository: AirlineRepository) : JsonParser {
+class SkyScannerJsonParser(private val airlineRepository: AirlineRepository, private val agentRepository: AgentRepository) : JsonParser {
     private val LOGGER = LoggerFactory.getLogger(SkyScannerJsonParser::class.java)
     override fun execute(resultJson: JsonObject): List<Result> {
         return resultJson.getAsJsonArray("itineraries")?.let { itineraries ->
@@ -73,7 +73,7 @@ class SkyScannerJsonParser(private val airlineRepository: AirlineRepository) : J
                         agentJson.asJsonObject.get("id").asString == agentId
                     }[0].let { agentJson ->
                         val name = agentJson.asJsonObject.get("name").asString
-                        val url1 = "PENDIENTE"
+                        val url1 = agentRepository.findUrlByName(name) ?: ""
                         Agent(name, url1)
                     }
                     Option(url, bookingId, price, agent)

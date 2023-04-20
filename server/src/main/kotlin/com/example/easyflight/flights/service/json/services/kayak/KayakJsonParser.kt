@@ -1,14 +1,13 @@
 package com.example.easyflight.flights.service.json.services.kayak
 
+import com.example.easyflight.agent.repository.AgentRepository
 import com.example.easyflight.airline.repository.AirlineRepository
 import com.example.easyflight.flights.adapters.response.*
 import com.example.easyflight.flights.service.json.services.JsonParser
 import com.google.gson.JsonObject
-import org.slf4j.LoggerFactory
 
-class KayakJsonParser(private val airlineRepository: AirlineRepository) : JsonParser {
+class KayakJsonParser(private val airlineRepository: AirlineRepository, private val agentRepository: AgentRepository) : JsonParser {
 
-    private val LOGGER = LoggerFactory.getLogger(KayakJsonParser::class.java)
     override fun execute(resultJson: JsonObject): List<Result> {
         val keys = resultJson.keySet().filter { key -> key.matches(Regex("[a-zA-Z0-9]{32}")) }
 
@@ -75,6 +74,7 @@ class KayakJsonParser(private val airlineRepository: AirlineRepository) : JsonPa
                             val providerUrl = logoUrlsJson.asJsonObject.get("image").asString
                             providerUrl
                         }[0]
+                        saveAgent(name, logoUrl)
                         Agent(name, logoUrl)
                     }
                     Option(url, bookingId, price, agent)
@@ -90,6 +90,15 @@ class KayakJsonParser(private val airlineRepository: AirlineRepository) : JsonPa
     private fun saveAirline(name: String, logoUrl: String) {
         try {
             airlineRepository.save(com.example.easyflight.airports.model.Airline(name = name, logoUrl = logoUrl))
+        } catch(_: Exception){
+
+        }
+
+    }
+
+    private fun saveAgent(name: String, logoUrl: String) {
+        try {
+            agentRepository.save(com.example.easyflight.agent.model.Agent(name = name, logoUrl = logoUrl))
         } catch(_: Exception){
 
         }
