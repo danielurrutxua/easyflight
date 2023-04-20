@@ -8,18 +8,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.easyflight.ui.theme.ComponentBackground
 
 @Composable
-fun TopBar(onBack: () -> Unit) {
+fun TopBar(onBack: () -> Unit, text: String, icon: ImageVector, color:Color = ComponentBackground) {
     TopAppBar(
-        backgroundColor = ComponentBackground,
+        backgroundColor = color,
         elevation = 0.dp,
         title = {
             Text(
-                text = "Detalles de tu viaje",
+                text = text,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
@@ -27,7 +28,7 @@ fun TopBar(onBack: () -> Unit) {
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = icon,
                     contentDescription = "Volver atrás",
                     tint = Color.White
                 )

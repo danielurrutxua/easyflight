@@ -15,7 +15,7 @@ import com.example.easyflight.feature_flight.presentation.util.dateVisualizerFor
 import java.time.LocalDate
 
 @Composable
-fun DatesBox(start: LocalDate, end: LocalDate?) {
+fun DatesBox(start: LocalDate, end: LocalDate? = null) {
     Box(
         modifier = Modifier
             .background(Color.White, shape = RoundedCornerShape(4.dp))

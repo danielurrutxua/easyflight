@@ -19,7 +19,7 @@ import com.example.easyflight.feature_flight.presentation.flights.FlightsViewMod
 import com.example.easyflight.feature_flight.presentation.flights.components.AddPassengersBox
 import com.example.easyflight.feature_flight.presentation.flights.components.DatesVisualizer
 import com.example.easyflight.feature_flight.presentation.flights.components.PassengersButton
-import com.example.easyflight.feature_flight.presentation.flights.components.SimpleButton
+import com.example.easyflight.feature_flight.presentation.flights.components.search.utils.SimpleButton
 import com.example.easyflight.feature_flight.presentation.flights.components.search.airports.AirportsSelector
 import kotlinx.coroutines.launch
 

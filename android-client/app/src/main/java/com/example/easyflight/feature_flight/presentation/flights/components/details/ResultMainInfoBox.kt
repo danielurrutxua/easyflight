@@ -1,7 +1,9 @@
 package com.example.easyflight.feature_flight.presentation.flights.components.details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,87 +36,98 @@ import com.example.easyflight.ui.theme.CyanBlue
 import com.example.easyflight.ui.theme.GrayText
 
 @Composable
-fun ResultMainInfoBox(request: FlightSearchRequest, data: Result) {
-    Column(
+fun ResultMainInfoBox(
+    request: FlightSearchRequest,
+    data: Result,
+    onOpenLegsDetail: (String) -> Unit
+) {
+    Box(
         Modifier
-            .fillMaxWidth()
             .padding(20.dp)
-            .background(Background),
-    ) {
+            .background(Background)
+            .clickable { onOpenLegsDetail(data.id) }) {
         Column(
-            Modifier
-                .fillMaxWidth()
-                .background(
-                    ComponentBackground,
-                    shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+            Modifier.fillMaxWidth()
+        )
+        {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        ComponentBackground,
+                        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+                    )
+                    .padding(15.dp)
+            ) {
+                Text(
+                    text = getDestinationName(data),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
                 )
-                .padding(15.dp)
-        ) {
-            Text(
-                text = getDestinationName(data),
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            DatesBox(start = request.departureDate, end = request.returnDate)
-            Spacer(modifier = Modifier.height(15.dp))
-            Text(
-                text = getAdditionalInfoText(request),
-                color = GrayText,
-                fontSize = 13.sp
-            )
-        }
-        Spacer(modifier = Modifier.height(1.dp))
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .background(ComponentBackground)
-                .padding(15.dp)
-        ) {
-            Text(
-                text = getLegAirportsText1(data),
-                color = GrayText,
-                fontSize = 13.sp
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            LegMainInfoBoxDetail(leg = getLegMainInfo(data.legs.first()))
-            if(data.legs.size > 1) {
                 Spacer(modifier = Modifier.height(15.dp))
-                Divider(modifier = Modifier.height(1.dp).background(Background))
+                DatesBox(start = request.departureDate, end = request.returnDate)
                 Spacer(modifier = Modifier.height(15.dp))
                 Text(
-                    text = getLegAirportsText2(data),
+                    text = getAdditionalInfoText(request),
+                    color = GrayText,
+                    fontSize = 13.sp
+                )
+            }
+            Spacer(modifier = Modifier.height(1.dp))
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(ComponentBackground)
+                    .padding(15.dp)
+            ) {
+                Text(
+                    text = getLegAirportsText1(data),
                     color = GrayText,
                     fontSize = 13.sp
                 )
                 Spacer(modifier = Modifier.height(15.dp))
-                LegMainInfoBoxDetail(leg = getLegMainInfo(data.legs.last()))
+                LegMainInfoBoxDetail(leg = getLegMainInfo(data.legs.first()))
+                if (request.roundTrip) {
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Divider(modifier = Modifier
+                        .height(1.dp)
+                        .background(Background))
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Text(
+                        text = getLegAirportsText2(data),
+                        color = GrayText,
+                        fontSize = 13.sp
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    LegMainInfoBoxDetail(leg = getLegMainInfo(data.legs.last()))
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(1.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .background(
-                    ComponentBackground,
-                    shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
+            Spacer(modifier = Modifier.height(1.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        ComponentBackground,
+                        shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
+                    )
+                    .padding(15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Ver información",
+                    color = CyanBlue,
+                    fontWeight = FontWeight.Bold
                 )
-                .padding(15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Ver información",
-                color = CyanBlue,
-                fontWeight = FontWeight.Bold
-            )
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = "arrow",
-                tint = CyanBlue
-            )
-        }
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = "arrow",
+                    tint = CyanBlue
+                )
+            }
 
+        }
     }
+
 }
 
 fun getLegMainInfo(leg: Leg) = LegMainInfo(
@@ -126,21 +139,25 @@ fun getLegMainInfo(leg: Leg) = LegMainInfo(
         leg.segments.first().airline.name,
         leg.segments.first().airline.logoUrl
     ),
-    nextDay = nextDay(leg.segments.first().departure.localDateTime, leg.segments.last().arrival.localDateTime ),
+    nextDay = nextDay(
+        leg.segments.first().departure.localDateTime,
+        leg.segments.last().arrival.localDateTime
+    ),
     stops = leg.segments.size - 1,
     duration = leg.duration
 )
 
-    fun getLegAirportsText1(data: Result) = "De ${getOriginName(data)} a ${getDestinationName(data)}"
-    fun getLegAirportsText2(data: Result) = "De ${getDestinationName(data)} a ${getOriginName(data)}"
+fun getLegAirportsText1(data: Result) = "De ${getOriginName(data)} a ${getDestinationName(data)}"
+fun getLegAirportsText2(data: Result) = "De ${getDestinationName(data)} a ${getOriginName(data)}"
 
-    fun getRoundTripText(roundTrip: Boolean) = if (roundTrip) "Ida y vuelta" else "Ida"
-    fun getAdditionalInfoText(request: FlightSearchRequest) =
-        "${getPassengersText(request.numPassengers.toInt())} · ${getRoundTripText(request.roundTrip)} · Económico"
+fun getRoundTripText(roundTrip: Boolean) = if (roundTrip) "Ida y vuelta" else "Ida"
+fun getAdditionalInfoText(request: FlightSearchRequest) =
+    "${getPassengersText(request.numPassengers.toInt())} · ${getRoundTripText(request.roundTrip)} · Económico"
 
-    fun getDestinationName(data: Result): String =
-        data.legs.first().segments.last().arrival.airport.name
-    fun getOriginName(data: Result): String =
-        data.legs.first().segments.first().departure.airport.name
+fun getDestinationName(data: Result): String =
+    data.legs.first().segments.last().arrival.airport.name
+
+fun getOriginName(data: Result): String =
+    data.legs.first().segments.first().departure.airport.name
 
 

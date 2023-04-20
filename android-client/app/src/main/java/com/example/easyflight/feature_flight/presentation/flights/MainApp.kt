@@ -10,6 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.easyflight.feature_flight.domain.model.service.request.FlightSearchRequest
 import com.example.easyflight.feature_flight.domain.model.service.response.Result
 import com.example.easyflight.feature_flight.presentation.flights.components.DetailsScreen
+import com.example.easyflight.feature_flight.presentation.flights.components.LegsDetailScreen
+import com.example.easyflight.feature_flight.presentation.flights.components.ProvidersScreen
 import com.example.easyflight.feature_flight.presentation.flights.components.ResultsScreen
 import com.example.easyflight.feature_flight.presentation.flights.components.SearchScreen
 import com.google.gson.Gson
@@ -49,19 +51,49 @@ fun MainApp() {
 
             // Inicializa ResultsScreen solo si resultMap no es null
             if (resultMap != null) {
-                ResultsScreen(data = resultMap!!, onBack = { navController.navigate("search") }, request = getSampleRequest(), navigateToDetails = navigateToDetails )
+                ResultsScreen(
+                    data = resultMap!!,
+                    onBack = { navController.popBackStack() },
+                    request = getSampleRequest(),
+                    navigateToDetails = navigateToDetails
+                )
             }
 
         }
         composable("details/{selectedTabIndex}/{itemIndex}") { backStackEntry ->
-            val selectedTabIndex = backStackEntry.arguments?.getString("selectedTabIndex")?.toIntOrNull() ?: 0
+            val selectedTabIndex =
+                backStackEntry.arguments?.getString("selectedTabIndex")?.toIntOrNull() ?: 0
             val itemIndex = backStackEntry.arguments?.getString("itemIndex")?.toIntOrNull() ?: 0
 
-            DetailsScreen(request = getSampleRequest(), data = getResultItem(resultMap!!, selectedTabIndex, itemIndex)) {
-                navController.navigate(
-                    "results"
-                )
+            val openProviders: (String) -> Unit = { resultId ->
+                navController.navigate("providers/$resultId")
             }
+
+            val openLegsDetail: (String) -> Unit = { resultId ->
+                navController.navigate("legs/$resultId")
+            }
+
+            DetailsScreen(
+                request = getSampleRequest(),
+                data = getResultItem(resultMap!!, selectedTabIndex, itemIndex),
+                onBack = { navController.popBackStack() },
+                onOpenProviders = openProviders,
+                onOpenLegsDetail = openLegsDetail
+            )
+
+
+        }
+        composable("providers/{resultId}") { backStackEntry ->
+            val resultId = backStackEntry.arguments?.getString("resultId")
+            val options = findResultById(resultMap!!, resultId!!)!!.options
+
+            ProvidersScreen(options) { navController.popBackStack() }
+        }
+        composable("legs/{resultId}") { backStackEntry ->
+            val resultId = backStackEntry.arguments?.getString("resultId")
+            val result = findResultById(resultMap!!, resultId!!)!!
+
+            LegsDetailScreen(getSampleRequest(), result) { navController.popBackStack() }
         }
 
     }
@@ -76,10 +108,29 @@ fun getSampleRequest() = FlightSearchRequest(
     numPassengers = "2",
     roundTrip = true
 )
-fun getResultItem(resultMap: Map<String, List<Result>>, selectedTabIndex: Int, itemIndex: Int): Result {
+
+fun getResultItem(
+    resultMap: Map<String, List<Result>>,
+    selectedTabIndex: Int,
+    itemIndex: Int
+): Result {
     val keys = resultMap.keys.toList()
     val selectedKey = keys[selectedTabIndex]
     return resultMap[selectedKey]!![itemIndex]
+}
+
+fun findResultById(map: Map<String, List<Result>>?, id: String): Result? {
+    if (map == null) {
+        return null
+    }
+
+    for (entry in map) {
+        val result = entry.value.find { it.id == id }
+        if (result != null) {
+            return result
+        }
+    }
+    return null
 }
 
 

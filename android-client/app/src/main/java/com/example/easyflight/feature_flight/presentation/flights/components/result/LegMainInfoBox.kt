@@ -38,6 +38,12 @@ fun LegMainInfoBox(leg: LegMainInfo) {
                     )
                 }
                 Spacer(modifier = Modifier.width(15.dp))
+            } else{
+                Box(
+                    modifier = Modifier
+                        .size(25.dp)
+                        .background(Color.Transparent,shape = RoundedCornerShape(3.dp))
+                )
             }
             Column {
                 Row(Modifier.fillMaxWidth()) {

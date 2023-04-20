@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.easyflight.feature_flight.presentation.flights.FlightsEvent
 import com.example.easyflight.feature_flight.presentation.flights.FlightsViewModel
+import com.example.easyflight.feature_flight.presentation.flights.components.search.utils.SimpleButton
 import com.example.easyflight.ui.theme.ComponentBackground
 import com.example.easyflight.ui.theme.CyanBlue
 import com.example.easyflight.ui.theme.GraySoft

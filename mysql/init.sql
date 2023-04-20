@@ -17,6 +17,12 @@ CREATE TABLE IF NOT EXISTS airline (
     logo_url VARCHAR(500) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS agent (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    logo_url VARCHAR(500) NOT NULL
+);
+
 -- Importa los datos del archivo CSV en la tabla airports
 LOAD DATA INFILE '/var/lib/mysql-files/airports.csv'
 INTO TABLE airport
