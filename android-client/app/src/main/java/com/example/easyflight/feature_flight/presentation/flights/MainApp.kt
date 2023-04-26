@@ -95,13 +95,13 @@ fun MainApp() {
         }
         composable("providers/{resultId}") { backStackEntry ->
             val resultId = backStackEntry.arguments?.getString("resultId")
-            val options = findResultById(resultMap!!, resultId!!)!!.options
+            val options = findResultById(viewModel.state.value.searchResults, resultId!!)!!.options
 
             ProvidersScreen(options) { navController.popBackStack() }
         }
         composable("legs/{resultId}") { backStackEntry ->
             val resultId = backStackEntry.arguments?.getString("resultId")
-            val result = findResultById(resultMap!!, resultId!!)!!
+            val result = findResultById(viewModel.state.value.searchResults, resultId!!)!!
 
             LegsDetailScreen(result) { navController.popBackStack() }
         }
