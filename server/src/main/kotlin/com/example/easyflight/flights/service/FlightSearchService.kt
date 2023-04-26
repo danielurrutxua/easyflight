@@ -1,6 +1,7 @@
 package com.example.easyflight.flights.service
 
 import com.example.easyflight.flights.adapters.request.FlightSearchRequest
+import com.example.easyflight.flights.adapters.response.Result
 import com.example.easyflight.flights.service.api.ScraperApiCaller
 import com.example.easyflight.flights.service.json.JsonParserFactory
 import com.example.easyflight.flights.service.source.WebSources
@@ -31,7 +32,13 @@ class FlightSearchService(private val jsonParserFactory: JsonParserFactory) {
                 val responseMap = urlsMap.map { (source, url) ->
                     async(Dispatchers.IO) {
                         val response = ScraperApiCaller.invoke(source, url)
-                        val resultList = jsonParserFactory.create(source).execute(stringResponseToJsonObject(response))
+                        var resultList = emptyList<Result>()
+                        try {
+                            resultList = jsonParserFactory.create(source).execute(stringResponseToJsonObject(response))
+                        } catch (ex: Exception) {
+                            LOGGER.error("$source error: ${ex.message}")
+                            ex.printStackTrace()
+                        }
                         LOGGER.info(source.name +": "+ resultList.size+ " results")
                         source to resultList
                     }

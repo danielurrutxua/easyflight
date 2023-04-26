@@ -66,7 +66,12 @@ class SkyScannerJsonParser(private val airlineRepository: AirlineRepository, pri
                 }
                 val options = itinerary.asJsonObject.get("pricing_options").asJsonArray.map { pricingOption ->
                     val bookingId = pricingOption.asJsonObject.get("id").asString
-                    val price = kotlin.math.ceil(pricingOption.asJsonObject.getAsJsonObject("price").get("amount")?.asDouble!!).toString()
+                    var price = "333"
+                    try{
+                        price = pricingOption.asJsonObject.getAsJsonObject("price").get("amount").toString()
+                    } catch(ex: Exception){
+                        LOGGER.info(ex.message)
+                    }
                     val url = pricingOption.asJsonObject.getAsJsonArray("items")[0].asJsonObject.get("url").asString
                     val agentId = pricingOption.asJsonObject.getAsJsonArray("items")[0].asJsonObject.get("agent_id").asString
                     val agent = resultJson.getAsJsonArray("agents").filter { agentJson ->
