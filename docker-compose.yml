@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   server:
-    build: ./server
+    image: durru/server:1.0
     ports:
       - "8080:8080"
     depends_on:
@@ -14,7 +14,7 @@ services:
     restart: always
 
   db:
-    build: ./mysql
+    image: durru/db:1.0
     environment:
       MYSQL_ROOT_PASSWORD: m4nd4l0r14n0
       MYSQL_DATABASE: db_easyflight
@@ -25,7 +25,7 @@ services:
     restart: always
 
   scrapi:
-    build: ./scrapi
+    image: durru/scrapi:1.0
     networks:
       main-network:
       proxy-network:
@@ -34,7 +34,7 @@ services:
     restart: always
   
   proxy:
-    build: ./proxy
+    image: durru/proxy:1.0
     networks:
       proxy-network:
     restart: always
