@@ -43,7 +43,7 @@ fun EasyFlightTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compos
     SideEffect {
         systemUiController.setStatusBarColor(
             color = statusBarColor,
-            darkIcons = darkTheme
+            darkIcons = false
         )
     }
 
