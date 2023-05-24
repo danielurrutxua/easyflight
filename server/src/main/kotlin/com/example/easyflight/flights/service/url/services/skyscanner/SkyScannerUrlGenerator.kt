@@ -10,7 +10,6 @@ class SkyScannerUrlGenerator : UrlGenerator {
             if (request.arrivalDate.isEmpty()) getWithoutReturn(request)
             else getWithReturn(request)
 
-    //TODO num children
     private fun getWithReturn(request: FlightSearchRequest): String =
             UrlBuilder()
                     .setBase(BASE_URL.plus(URL_WITH_RETURN))

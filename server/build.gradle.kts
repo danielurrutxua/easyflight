@@ -25,11 +25,6 @@ dependencies {
     // Auto Documentation
     implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
 
-    // Scraping
-    implementation("org.seleniumhq.selenium:selenium-java:4.1.4")
-    implementation("org.jsoup:jsoup:1.14.3")
-
-
     //JSON Objects
     implementation("com.google.code.gson:gson:2.10.1")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
@@ -49,6 +44,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.reactivestreams:reactive-streams:1.0.4")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
+
+    //Swagger
+    // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
+    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
 
 
 
