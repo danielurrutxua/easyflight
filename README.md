@@ -29,6 +29,8 @@ Para levantar todo el proyecto, se incluye un archivo Docker Compose que levanta
 ```bash
   docker-compose up
 ```
+
+
 ## Uso
 
 ### Android Client
@@ -50,6 +52,8 @@ La aplicación de Android sirve como interfaz de usuario para realizar búsqueda
 ### Server y Scrapi
 
 El servidor y la API de web scraping se levantan automáticamente cuando ejecutas `docker-compose up` en la raíz del proyecto. No es necesario ninguna intervención manual para utilizar estos componentes.
+
+
 
 ## Desarrollo
 
