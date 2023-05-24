@@ -86,17 +86,17 @@ fun ResultsScreen(
                         }
                     ) {
                         if (index == 0) {
-                            val painter = painterResource(R.drawable.skyscanner_logo)
-                            Image(
-                                painter = painter,
-                                contentDescription = "Skyscanner Logo",
-                                modifier = Modifier.size(256.dp, 64.dp)
-                            )
-                        } else {
                             val painter = painterResource(R.drawable.kayak_logo)
                             Image(
                                 painter = painter,
                                 contentDescription = "Kayak Logo",
+                                modifier = Modifier.size(256.dp, 64.dp)
+                            )
+                        } else {
+                            val painter = painterResource(R.drawable.skyscanner_logo)
+                            Image(
+                                painter = painter,
+                                contentDescription = "Skyscanner Logo",
                                 modifier = Modifier.size(256.dp, 64.dp)
                             )
                         }
