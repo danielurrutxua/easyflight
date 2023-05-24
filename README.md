@@ -1,92 +1,89 @@
-# Sistema de Búsqueda de Vuelos - Web Scraping
+# Flight Search System - Web Scraping
 
-Este proyecto consiste en un sistema de búsqueda de vuelos que utiliza técnicas de web scraping para recolectar datos. Se compone de tres componentes principales:
+This project is a flight search system that uses web scraping techniques to collect data. It is composed of three main components:
 
-- `android-client`: Una aplicación de Android que sirve como interfaz de usuario para realizar búsquedas y visualizar resultados.
-- `server`: Un servidor basado en Spring Boot que maneja las solicitudes de la aplicación móvil y se comunica con el componente de web scraping.
-- `scrapi`: Una API en Flask que realiza el web scraping y proporciona los datos a `server`.
+- `android-client`: An Android application that serves as a user interface to perform searches and visualize results.
+- `server`: A Spring Boot-based server that handles requests from the mobile application and communicates with the web scraping component.
+- `scrapi`: A Flask API that performs web scraping and provides data to `server`.
 
-## Comenzando
+## Getting Started
 
-Para levantar todo el proyecto, se incluye un archivo Docker Compose que levanta las imágenes correspondientes desde DockerHub.
+To start up the entire project, a Docker Compose file is included that brings up the corresponding images from DockerHub.
 
-### Prerrequisitos
+### Prerequisites
 
 - Docker
 - Docker Compose
 
-### Instalación
+### Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 ```bash
   git clone https://github.com/danielurrutxua/easyflight.git
 ```
-2. Navega al directorio del proyecto:
+2. Navigate to the project directory:
 ```bash
   cd easyflight
 ```
-3. Levanta los contenedores con Docker Compose:
+3. Bring up the containers with Docker Compose:
 ```bash
   docker-compose up
 ```
-
-
-## Uso
+## Usage
 
 ### Android Client
 
-La aplicación de Android sirve como interfaz de usuario para realizar búsquedas y visualizar los resultados. Para usarla, sigue estos pasos:
+The Android application serves as a user interface for conducting searches and visualizing the results. To use it, follow these steps:
 
-1. Asegúrate de tener instalado Android Studio. Puedes descargarlo desde [aquí](https://developer.android.com/studio).
+1. Ensure you have Android Studio installed. You can download it from [here](https://developer.android.com/studio).
 
-2. Importa el proyecto `android-client` en Android Studio. Para hacerlo, abre Android Studio, selecciona `File` -> `New` -> `Import Project` y selecciona el directorio `android-client`.
+2. Import the `android-client` project into Android Studio. To do this, open Android Studio, select `File` -> `New` -> `Import Project` and select the `android-client` directory.
 
-3. Después de importar el proyecto, genera el archivo APK. Ve a `Build` -> `Build Bundle(s) / APK(s)` -> `Build APK(s)`. 
+3. After importing the project, generate the APK file. Go to `Build` -> `Build Bundle(s) / APK(s)` -> `Build APK(s)`. 
 
-4. Una vez generado el archivo APK, puedes instalarlo en tu dispositivo Android. Conecta tu dispositivo a tu máquina y copia el APK a tu dispositivo. Luego, en tu dispositivo, navega hasta la ubicación del archivo APK usando un administrador de archivos, tócalo e instálalo. 
+4. Once the APK file is generated, you can install it on your Android device. Connect your device to your machine and copy the APK to your device. Then, on your device, navigate to the location of the APK file using a file manager, tap it, and install it. 
 
-> **Nota:** Asegúrate de habilitar la opción "Instalar aplicaciones desconocidas" en la configuración de seguridad de tu dispositivo para poder instalar el APK.
+> **Note:** Be sure to enable the "Install unknown apps" option in your device's security settings in order to install the APK.
 
-5. Abre la aplicación e ingresa los detalles de tu búsqueda de vuelos.
+5. Open the application and enter the details of your flight search.
 
-### Server y Scrapi
+### Server and Scrapi
 
-El servidor y la API de web scraping se levantan automáticamente cuando ejecutas `docker-compose up` en la raíz del proyecto. No es necesario ninguna intervención manual para utilizar estos componentes.
+The server and the web scraping API automatically start up when you execute `docker-compose up` at the project root. No manual intervention is needed to utilize these components.
 
 
+## Development
 
-## Desarrollo
-
-Si deseas contribuir al proyecto o personalizarlo para tu uso, aquí están las instrucciones para levantar los distintos componentes de manera local:
+If you wish to contribute to the project or customize it for your use, here are the instructions for setting up the various components locally:
 
 ### Android Client
 
-Para desarrollar en el cliente de Android, necesitarás Android Studio. Importa el proyecto como se describe en la sección [Uso](#uso) y estarás listo para comenzar a desarrollar.
+To develop on the Android client, you will need Android Studio. Import the project as described in the [Usage](#usage) section and you will be ready to start developing.
 
 ### Server
 
-Para desarrollar en el servidor Spring Boot, sigue estos pasos:
+To develop on the Spring Boot server, follow these steps:
 
-1. Asegúrate de tener instalado un entorno de desarrollo adecuado para Java y Spring Boot, como [IntelliJ IDEA](https://www.jetbrains.com/idea/).
-2. Importa el proyecto `server` en tu entorno de desarrollo.
-3. Modifica el archivo `application.properties` para apuntar a una base de datos MySQL local. Asegúrate de tener una instancia de MySQL en ejecución localmente y proporciona los detalles de conexión en `application.properties`.
+1. Ensure you have an appropriate development environment installed for Java and Spring Boot, such as [IntelliJ IDEA](https://www.jetbrains.com/idea/).
+2. Import the `server` project into your development environment.
+3. Modify the `application.properties` file to point to a local MySQL database. Make sure you have a MySQL instance running locally and provide the connection details in `application.properties`.
 
 ### Scrapi
 
-Para desarrollar en la API de Flask, necesitarás un entorno de Python. Aquí están los pasos para preparar tu entorno:
+To develop on the Flask API, you will need a Python environment. Here are the steps to prepare your environment:
 
-1. Asegúrate de tener Python instalado en tu máquina. Puedes descargar Python desde [aquí](https://www.python.org/downloads/).
-2. Recomiendo usar un entorno virtual para gestionar las dependencias. Puedes crear uno con el siguiente comando:
+1. Make sure you have Python installed on your machine. You can download Python from [here](https://www.python.org/downloads/).
+2. I recommend using a virtual environment to manage dependencies. You can create one with the following command:
  ```bash
    python3 -m venv venv
  ```
- Y luego actívalo con:
+Then activate it with:
 ```bash
    source venv/bin/activate  # En Unix o MacOS
    .\venv\Scripts\activate   # En Windows
 ```
- 3. Instala las dependencias necesarias con pip, el gestor de paquetes de Python. Las dependencias se enumeran en `scrapi/requirements.txt`. Para instalarlas, navega hasta el directorio `scrapi` y ejecuta:
+ 3. Install the necessary dependencies with pip, the Python package manager. The dependencies are listed in `scrapi/requirements.txt`. To install them, navigate to the `scrapi` directory and execute:
 ```bash
    pip install -r requirements.txt
 ```
-4. Ahora deberías estar listo para comenzar a desarrollar en scrapi.
+4. You should now be ready to start developing in scrapi.
